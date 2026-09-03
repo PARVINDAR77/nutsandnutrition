@@ -48,7 +48,7 @@ class OfferController extends Controller
                 ->select('id', 'name', 'code', 'banner', 'banner_button_text', 'banner_button_link')
                 ->first();
 
-            if (!$offer || !$offer->banner) {
+            if (!$offer) {
                 return response()->json([
                     'success' => true,
                     'data' => null,
@@ -64,7 +64,7 @@ class OfferController extends Controller
                     'code' => $offer->code,
                     'banner_button_text' => $offer->banner_button_text,
                     'banner_button_link' => $offer->banner_button_link,
-                    'banner_url' => \Illuminate\Support\Str::startsWith($offer->banner, 'http') ? $offer->banner : asset('storage/' . $offer->banner)
+                    'banner_url' => $offer->banner ? (\Illuminate\Support\Str::startsWith($offer->banner, 'http') ? $offer->banner : asset('storage/' . $offer->banner)) : null
                 ],
                 'message' => 'Start banner retrieved successfully'
             ]);
