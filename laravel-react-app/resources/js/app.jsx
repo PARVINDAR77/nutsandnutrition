@@ -11,6 +11,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import CartDrawer from './components/CartDrawer';
+import StartBanner from './components/StartBanner';
 
 // Pages
 import Home from './pages/Home';
@@ -52,6 +53,7 @@ function App() {
         <CartProvider>
           <LoadingScreen isLoading={isLoading} />
           <CartDrawer />
+          <StartBanner />
           
           <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
