@@ -230,8 +230,15 @@ const AddressForm = ({ formData, setFormData, onSave, onCancel }) => (
         <input 
           type="text" 
           value={formData.mobile} 
-          onChange={e => setFormData({...formData, mobile: e.target.value})} 
+          onChange={e => {
+            const val = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            if (val.length <= 10) {
+              setFormData({...formData, mobile: val});
+            }
+          }}
+          maxLength="10"
           style={inputStyle} 
+          placeholder="10-digit mobile number"
         />
       </div>
       
