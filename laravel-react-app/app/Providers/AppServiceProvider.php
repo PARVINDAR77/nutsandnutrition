@@ -22,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        if (env('APP_ENV') === 'production') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         \Illuminate\Support\Facades\View::composer('customer.partials.header', function ($view) {
             $view->with('navCategories', \App\Models\Category::where('show_in_nav', true)
                 ->where('status', true)
