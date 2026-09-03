@@ -28,6 +28,8 @@ class AuthController extends Controller
             return back()->withErrors(['Invalid credentials']);
         }
 
+        $request->session()->regenerate();
+
         $admin = Auth::guard('admin')->user();
 
         $admin->tokens()->delete();
