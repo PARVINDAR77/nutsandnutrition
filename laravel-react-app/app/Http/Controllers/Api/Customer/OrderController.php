@@ -224,4 +224,35 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get the authenticated customer's orders
+     */
+    public function index(Request $request)
+    {
+        try {
+            $customer = auth('customer_api')->user();
+            
+            if (!$customer) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+            }
+
+            $orders = Order::where('customer_id', $customer->id)
+                ->with(['items.productVariant.product', 'items.productVariant.media'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $orders
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching orders: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch orders.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
