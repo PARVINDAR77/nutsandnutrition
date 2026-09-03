@@ -85,7 +85,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <!-- Custom JavaScript -->
-    <script src="{{ asset('js/admin/custom.js') }}"></script>
+    <script src="{{ asset('js/admin/custom.js') }}?v={{ filemtime(public_path('js/admin/custom.js')) }}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
 
