@@ -572,8 +572,9 @@
     function viewCustomer(id) {
         showLoading();
 
-        // Since we don't have a show route, we'll fetch from the data endpoint
-        fetch(`{{ route('admin.users.data') }}?search=${id}&per_page=1`, {
+        const url = routeTemplates.view.replace(':id', id);
+
+        fetch(url, {
             headers: {
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -581,8 +582,8 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success && data.data.length > 0) {
-                const customer = data.data[0];
+            if (data.success && data.data) {
+                const customer = data.data;
                 Swal.fire({
                     title: 'Customer Details',
                     html: `

@@ -289,7 +289,14 @@ const About = () => {
       </section>
 
       {/* SECTION F: Final About CTA */}
-      <section className="section-padding" style={{ backgroundColor: colors.darkGreen, color: 'white', textAlign: 'center' }}>
+      <section className="section-padding" style={{ 
+        backgroundColor: colors.darkGreen, 
+        backgroundImage: 'linear-gradient(rgba(42, 93, 44, 0.75), rgba(42, 93, 44, 0.75)), url(/images/nutrition_cta_bg.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        color: 'white', 
+        textAlign: 'center' 
+      }}>
         <div className="container">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <h2 style={{ fontSize: '2.5rem', color: 'white', marginBottom: '1rem', fontFamily: 'var(--font-display)' }}>Discover Better Everyday Nutrition.</h2>
@@ -304,7 +311,7 @@ const About = () => {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.75rem',
-                  backgroundColor: colors.golden,
+                  backgroundColor: '#ff6b6b',
                   color: 'white',
                   border: 'none',
                   padding: '1rem 2rem',

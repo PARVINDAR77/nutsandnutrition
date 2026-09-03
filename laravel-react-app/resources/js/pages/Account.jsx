@@ -45,7 +45,13 @@ const Account = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'mobile') {
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({ ...formData, [name]: numericValue });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   return (
@@ -66,7 +72,7 @@ const Account = () => {
             <Link to="/orders" style={linkStyle}><FiPackage /> Orders</Link>
             <Link to="/wishlist" style={linkStyle}><FiHeart /> Wishlist</Link>
             <Link to="/addresses" style={linkStyle}><FiMapPin /> Addresses</Link>
-            <button onClick={handleLogout} style={{ ...linkStyle, color: 'var(--brand-red)', marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1rem', backgroundColor: 'transparent', border: 'none', borderTop: '1px solid var(--border)', width: '100%', textAlign: 'left', cursor: 'pointer' }}>
+            <button onClick={handleLogout} style={{ ...linkStyle, color: 'var(--brand-red)', marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1rem', backgroundColor: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}>
               <FiLogOut /> Logout
             </button>
           </nav>
@@ -100,7 +106,7 @@ const Account = () => {
             </div>
             <div>
               <label style={labelStyle}>Mobile Number</label>
-              <input type="tel" name="mobile" value={formData.mobile} onChange={handleChange} readOnly={!isEditing} style={{...inputStyle, backgroundColor: isEditing ? 'white' : '#f9f9f9', border: isEditing ? '1px solid var(--primary-green)' : '1px solid var(--border)'}} />
+              <input type="tel" name="mobile" value={formData.mobile} onChange={handleChange} readOnly={!isEditing} maxLength="10" pattern="\d{10}" title="Please enter exactly 10 digits" style={{...inputStyle, backgroundColor: isEditing ? 'white' : '#f9f9f9', border: isEditing ? '1px solid var(--primary-green)' : '1px solid var(--border)'}} />
             </div>
           </div>
           

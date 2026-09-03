@@ -7,6 +7,7 @@ import { useWishlist } from '../context/WishlistContext';
 import logo from '../assets/logo-cropped.png';
 import { categoryService } from '../services/categoryService';
 import { offerService } from '../services/offerService';
+import { useAutoRefresh } from '../context/AutoRefreshContext';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,6 +19,7 @@ const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [categories, setCategories] = useState([]);
   const [activeOffer, setActiveOffer] = useState(null);
+  const { refreshTrigger } = useAutoRefresh();
 
   useEffect(() => {
     const fetchCategoriesAndOffers = async () => {
@@ -30,7 +32,7 @@ const Navbar = () => {
       }
     };
     fetchCategoriesAndOffers();
-  }, []);
+  }, [refreshTrigger]);
 
   const { scrollY } = useScroll();
 

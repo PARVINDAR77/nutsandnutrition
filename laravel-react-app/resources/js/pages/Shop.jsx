@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
 import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
+import { useAutoRefresh } from '../context/AutoRefreshContext';
 
 // Same premium palette used in About/Contact pages
 const colors = {
@@ -33,6 +34,8 @@ const Shop = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
 
+  const { refreshTrigger } = useAutoRefresh();
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -43,7 +46,7 @@ const Shop = () => {
       }
     };
     fetchProducts();
-  }, []);
+  }, [refreshTrigger]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -51,7 +54,7 @@ const Shop = () => {
       setCategories(data);
     };
     fetchCategories();
-  }, []);
+  }, [refreshTrigger]);
 
   useEffect(() => {
     const path = location.pathname;

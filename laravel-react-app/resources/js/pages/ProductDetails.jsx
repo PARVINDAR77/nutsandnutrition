@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import QuantitySelector from '../components/QuantitySelector';
 import Button from '../components/Button';
+import { useAutoRefresh } from '../context/AutoRefreshContext';
 
 const ProductDetails = () => {
   const { slug } = useParams();
@@ -17,6 +18,7 @@ const ProductDetails = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
+  const { refreshTrigger } = useAutoRefresh();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -45,7 +47,7 @@ const ProductDetails = () => {
       }
     };
     fetchProduct();
-  }, [slug]);
+  }, [slug, refreshTrigger]);
 
   if (!product) {
     return (

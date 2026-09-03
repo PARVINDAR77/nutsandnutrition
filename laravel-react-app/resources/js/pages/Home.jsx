@@ -8,6 +8,7 @@ import ProductCard from '../components/ProductCard';
 import { useState, useEffect } from 'react';
 import { categoryService } from '../services/categoryService';
 import { productService } from '../services/productService';
+import { useAutoRefresh } from '../context/AutoRefreshContext';
 
 const TypewriterText = () => {
   const [line1, setLine1] = useState('');
@@ -93,8 +94,9 @@ const Home = () => {
   const [isBoxOpened, setIsBoxOpened] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [email, setEmail] = useState('');
+  const { refreshTrigger } = useAutoRefresh();
 
-  // Fetch data on mount
+  // Fetch data on mount and on auto-refresh
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -113,7 +115,7 @@ const Home = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleSubscribe = (e) => {
     e.preventDefault();

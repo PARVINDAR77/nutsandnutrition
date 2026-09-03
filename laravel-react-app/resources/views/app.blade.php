@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <title>Laravel React App</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-cropped.png') }}?v=2">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

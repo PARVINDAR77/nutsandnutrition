@@ -20,10 +20,18 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    if (name === 'mobile') {
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData(prev => ({
+        ...prev,
+        [name]: numericValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -129,43 +137,43 @@ const Register = () => {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div>
-            <label style={labelStyle}>Full Name</label>
+            <label style={labelStyle}>Full Name <span style={{ color: '#d32f2f' }}>*</span></label>
             <input 
-              type="text" name="name" value={formData.name} onChange={handleChange}
+              type="text" name="name" value={formData.name} onChange={handleChange} required
               placeholder="John Doe" style={inputStyle} 
             />
           </div>
           
           <div className="form-grid">
             <div>
-              <label style={labelStyle}>Email Address</label>
+              <label style={labelStyle}>Email Address <span style={{ color: '#d32f2f' }}>*</span></label>
               <input 
-                type="email" name="email" value={formData.email} onChange={handleChange}
+                type="email" name="email" value={formData.email} onChange={handleChange} required
                 placeholder="john@example.com" style={inputStyle} 
               />
             </div>
             <div>
-              <label style={labelStyle}>Mobile Number</label>
+              <label style={labelStyle}>Mobile Number <span style={{ color: '#d32f2f' }}>*</span></label>
               <input 
-                type="tel" name="mobile" value={formData.mobile} onChange={handleChange}
-                placeholder="+91 98765 43210" style={inputStyle} 
+                type="tel" name="mobile" value={formData.mobile} onChange={handleChange} required
+                placeholder="9876543210" style={inputStyle} maxLength="10" pattern="\d{10}" title="Please enter exactly 10 digits"
               />
             </div>
           </div>
 
           <div className="form-grid">
             <div>
-              <label style={labelStyle}>Password</label>
+              <label style={labelStyle}>Password <span style={{ color: '#d32f2f' }}>*</span></label>
               <input 
-                type="password" name="password" value={formData.password} onChange={handleChange}
-                placeholder="Min. 6 characters" style={inputStyle} 
+                type="password" name="password" value={formData.password} onChange={handleChange} required
+                placeholder="Min. 6 characters" style={inputStyle} minLength="6"
               />
             </div>
             <div>
-              <label style={labelStyle}>Confirm Password</label>
+              <label style={labelStyle}>Confirm Password <span style={{ color: '#d32f2f' }}>*</span></label>
               <input 
-                type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange}
-                placeholder="Retype password" style={inputStyle} 
+                type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required
+                placeholder="Retype password" style={inputStyle} minLength="6"
               />
             </div>
           </div>

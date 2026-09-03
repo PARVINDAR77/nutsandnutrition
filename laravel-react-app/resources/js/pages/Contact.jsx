@@ -48,7 +48,13 @@ const Contact = () => {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'phone') {
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({ ...formData, [name]: numericValue });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -208,22 +214,22 @@ const Contact = () => {
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                   <div>
-                    <label style={labelStyle}>Your Name</label>
+                    <label style={labelStyle}>Your Name <span style={{ color: '#d32f2f' }}>*</span></label>
                     <input type="text" name="name" value={formData.name} onChange={handleChange} required style={inputStyle} placeholder="Jane Doe" />
                   </div>
                   <div>
-                    <label style={labelStyle}>Email Address</label>
+                    <label style={labelStyle}>Email Address <span style={{ color: '#d32f2f' }}>*</span></label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} required style={inputStyle} placeholder="jane@example.com" />
                   </div>
                 </div>
                 
                 <div>
-                  <label style={labelStyle}>Phone Number (Optional)</label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} placeholder="+91 98765 43210" />
+                  <label style={labelStyle}>Phone Number <span style={{ color: '#d32f2f' }}>*</span></label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required style={inputStyle} placeholder="9876543210" minLength="10" maxLength="10" pattern="\d{10}" title="Please enter exactly 10 digits" />
                 </div>
                 <div>
-                  <label style={labelStyle}>Message</label>
-                  <textarea name="message" value={formData.message} onChange={handleChange} required style={{ ...inputStyle, minHeight: '140px', resize: 'vertical' }} placeholder="How can we help you today?"></textarea>
+                  <label style={labelStyle}>Message (Optional)</label>
+                  <textarea name="message" value={formData.message} onChange={handleChange} style={{ ...inputStyle, minHeight: '140px', resize: 'vertical' }} placeholder="How can we help you today?"></textarea>
                 </div>
                 
                 {error && (

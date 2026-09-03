@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>@yield('title', 'eCommerce Admin Panel')</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-cropped.png') }}?v=2">
+    
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Google Fonts -->
