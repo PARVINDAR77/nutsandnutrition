@@ -75,7 +75,7 @@ const PaymentModal = ({ isOpen, onClose, onSuccess, amount, orderId, paymentMeth
               </div>
             </div>
             {paymentStatus !== 'success' && (
-              <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', opacity: 0.7 }}>
+              <button onClick={onClose} aria-label="Close Payment Modal" style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', opacity: 0.7 }}>
                 <FiX size={24} />
               </button>
             )}

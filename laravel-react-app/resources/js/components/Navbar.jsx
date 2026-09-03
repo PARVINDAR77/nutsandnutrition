@@ -73,7 +73,7 @@ const Navbar = () => {
   return (
     <>
       {/* Top Green Banner */}
-      <div style={{ backgroundColor: '#68B348', color: 'var(--white)', fontSize: '0.8rem', padding: '0.5rem 0', fontWeight: '500' }}>
+      <div style={{ backgroundColor: 'var(--dark-green)', color: 'var(--white)', fontSize: '0.8rem', padding: '0.5rem 0', fontWeight: '500' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '1rem', lineHeight: 1 }}>{activeOffer ? '🎉' : '🍃'}</span> 
@@ -156,19 +156,20 @@ const Navbar = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{ border: 'none', backgroundColor: 'transparent', outline: 'none', flex: 1, fontSize: '0.9rem' }}
                 />
-                <button type="submit" style={{ backgroundColor: 'transparent', border: 'none', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center' }}>
+                <button type="submit" aria-label="Search" style={{ backgroundColor: 'transparent', border: 'none', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center' }}>
                   <FiSearch size={18} />
                 </button>
               </form>
 
               {/* Icons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-                <Link to="/wishlist" style={{ color: 'var(--dark-text)', display: 'flex', alignItems: 'center' }}>
+                <Link to="/wishlist" aria-label="Wishlist" style={{ color: 'var(--dark-text)', display: 'flex', alignItems: 'center' }}>
                   <FiHeart size={22} />
                 </Link>
                 
                 <button 
                   onClick={openCart}
+                  aria-label="Cart"
                   style={{ color: 'var(--dark-text)', background: 'none', border: 'none', position: 'relative', display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                 >
                   <FiShoppingCart size={22} />
@@ -193,13 +194,14 @@ const Navbar = () => {
                   )}
                 </button>
 
-                <Link to="/account" style={{ color: 'var(--dark-text)', display: 'flex', alignItems: 'center' }} className="hide-mobile">
+                <Link to="/account" aria-label="Account" style={{ color: 'var(--dark-text)', display: 'flex', alignItems: 'center' }} className="hide-mobile">
                   <FiUser size={22} />
                 </Link>
 
                 <button 
                   className="show-mobile"
                   onClick={() => setIsMobileMenuOpen(true)}
+                  aria-label="Menu"
                   style={{ color: 'var(--dark-text)', background: 'none', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                 >
                   <FiMenu size={24} />
@@ -229,7 +231,7 @@ const Navbar = () => {
               <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--brand-red)', fontFamily: 'var(--font-display)' }}>
                 Nuts & Nutrition
               </div>
-              <button onClick={() => setIsMobileMenuOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--dark-text)', cursor: 'pointer' }}>
+              <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close Menu" style={{ background: 'none', border: 'none', color: 'var(--dark-text)', cursor: 'pointer' }}>
                 <FiX size={28} />
               </button>
             </div>
@@ -242,7 +244,7 @@ const Navbar = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ border: 'none', outline: 'none', flex: 1, fontSize: '1rem', padding: '0.5rem 0' }}
               />
-              <button type="submit" style={{ backgroundColor: 'transparent', border: 'none', color: 'var(--primary-green)', cursor: 'pointer' }}>
+              <button type="submit" aria-label="Search" style={{ backgroundColor: 'transparent', border: 'none', color: 'var(--primary-green)', cursor: 'pointer' }}>
                 <FiSearch size={20} />
               </button>
             </form>

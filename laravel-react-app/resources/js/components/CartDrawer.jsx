@@ -59,7 +59,7 @@ const CartDrawer = () => {
               borderBottom: '1px solid var(--border)'
             }}>
               <h3 style={{ margin: 0, fontSize: '1.25rem' }}>Your Cart</h3>
-              <button onClick={closeCart} style={{ color: 'var(--dark-text)' }}>
+              <button onClick={closeCart} aria-label="Close Cart" style={{ color: 'var(--dark-text)', background: 'none', border: 'none', cursor: 'pointer' }}>
                 <FiX size={24} />
               </button>
             </div>
@@ -89,7 +89,8 @@ const CartDrawer = () => {
                           </div>
                           <button 
                             onClick={() => removeFromCart(item.id, item.variant.sku)}
-                            style={{ color: 'var(--brand-red)', padding: '4px' }}
+                            aria-label="Remove item"
+                            style={{ color: 'var(--brand-red)', padding: '4px', background: 'none', border: 'none', cursor: 'pointer' }}
                           >
                             <FiTrash2 size={16} />
                           </button>

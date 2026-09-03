@@ -486,17 +486,26 @@ const Home = () => {
                     key={idx}
                     onClick={() => setCurrentReview(idx)}
                     style={{ 
-                      width: '10px', 
-                      height: '10px', 
-                      borderRadius: '50%', 
-                      backgroundColor: currentReview === idx ? 'var(--dark-green)' : 'rgba(0,0,0,0.1)',
+                      width: '44px', 
+                      height: '44px', 
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'transparent',
                       border: 'none',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease',
                       padding: 0
                     }}
                     aria-label={`Go to review ${idx + 1}`}
-                  ></button>
+                  >
+                    <div style={{
+                      width: '10px',
+                      height: '10px',
+                      borderRadius: '50%',
+                      backgroundColor: currentReview === idx ? 'var(--dark-green)' : 'rgba(0,0,0,0.1)',
+                      transition: 'all 0.3s ease',
+                    }}></div>
+                  </button>
                 ))}
               </div>
             </div>

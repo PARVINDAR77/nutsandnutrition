@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>Laravel React App</title>
+    <title>Nuts & Nutrition | Premium Dry Fruits & Seeds</title>
+    <meta name="description" content="Nuts & Nutrition offers premium quality dry fruits, seeds, and nutrition powders. Shop online for the finest natural ingredients.">
+    <meta name="theme-color" content="#68b348">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo-cropped.png') }}?v=2">
