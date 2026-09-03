@@ -89,7 +89,7 @@ class OrderController extends Controller
                     },
 
                     'shipping_address' => $order->shipping_address ? implode(', ', array_filter($order->shipping_address)) : 'N/A',
-                    'tracking_number' => $order->shipments->first()->tracking_number ?? null,
+                    'tracking_number' => $order->shipments->first()?->tracking_number ?? null,
                 ];
             });
 
