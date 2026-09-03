@@ -125,6 +125,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // ============================================
     // 8️⃣ SIDEBAR SUBMENU TOGGLE (Prevent redirect)
     // ============================================
+    const sidebarNav = document.querySelector("#sidebar nav");
+    
+    // Restore sidebar scroll position on page load
+    if (sidebarNav) {
+        const savedScroll = sessionStorage.getItem("sidebarScrollPos");
+        if (savedScroll) {
+            sidebarNav.scrollTop = parseInt(savedScroll, 10);
+        } else {
+            // Alternatively, scroll the active item into view if no scroll position is saved
+            const activeItem = sidebarNav.querySelector(".border-red-500");
+            if (activeItem) {
+                activeItem.scrollIntoView({ block: "center" });
+            }
+        }
+
+        // Save scroll position before unloading the page
+        window.addEventListener("beforeunload", () => {
+            sessionStorage.setItem("sidebarScrollPos", sidebarNav.scrollTop);
+        });
+    }
+
     document.querySelectorAll("#sidebar a.parent-link").forEach(link => {
         link.addEventListener("click", function (e) {
             const parent = this.closest(".relative");
@@ -132,6 +153,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (submenu) {
                 e.preventDefault();
+                
+                // Close other open submenus
+                if (!parent.classList.contains("submenu-open")) {
+                    document.querySelectorAll("#sidebar .relative.submenu-open").forEach(openParent => {
+                        openParent.classList.remove("submenu-open");
+                    });
+                }
+
                 parent.classList.toggle("submenu-open");
             }
         });

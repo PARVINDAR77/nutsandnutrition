@@ -212,7 +212,7 @@ const ProductDetails = () => {
               <FiStar fill="currentColor" />
             </div>
             <span style={{ fontWeight: '600' }}>{product.rating}</span>
-            <span style={{ color: 'var(--secondary-text)' }}>({product.reviews} reviews)</span>
+            {product.reviews ? <span style={{ color: 'var(--secondary-text)' }}>({product.reviews} reviews)</span> : null}
           </div>
 
           <div 

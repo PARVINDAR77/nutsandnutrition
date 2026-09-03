@@ -112,7 +112,7 @@ const ProductCard = ({ product }) => {
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginBottom: '0.75rem', color: '#ffb800', fontSize: '0.8rem' }}>
             {"★★★★★".split('').map((star, i) => <span key={i}>{star}</span>)}
-            <span style={{ color: 'var(--secondary-text)', fontSize: '0.75rem', marginLeft: '2px' }}>({product.reviews})</span>
+            {product.reviews ? <span style={{ color: 'var(--secondary-text)', fontSize: '0.75rem', marginLeft: '2px' }}>({product.reviews})</span> : null}
           </div>
 
           <div style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '0.75rem' }}>
