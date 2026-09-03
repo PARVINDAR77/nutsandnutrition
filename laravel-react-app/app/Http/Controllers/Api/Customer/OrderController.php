@@ -60,9 +60,17 @@ class OrderController extends Controller
             }
 
             $orders = Order::where('customer_id', $customerId)
-                ->with(['items.productVariant.product', 'items.productVariant.media'])
+                ->with(['items.variant.product', 'items.variant.media'])
                 ->orderBy('created_at', 'desc')
                 ->get();
+
+            // Map 'variant' to 'product_variant' for frontend compatibility
+            $orders->each(function ($order) {
+                $order->items->each(function ($item) {
+                    $item->product_variant = $item->variant;
+                    unset($item->variant);
+                });
+            });
 
             return response()->json([
                 'success' => true,
@@ -225,34 +233,4 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Get the authenticated customer's orders
-     */
-    public function index(Request $request)
-    {
-        try {
-            $customer = auth('customer_api')->user();
-            
-            if (!$customer) {
-                return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
-            }
-
-            $orders = Order::where('customer_id', $customer->id)
-                ->with(['items.productVariant.product', 'items.productVariant.media'])
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            return response()->json([
-                'success' => true,
-                'data' => $orders
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error fetching orders: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch orders.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
 }
