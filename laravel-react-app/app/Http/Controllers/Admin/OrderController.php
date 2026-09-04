@@ -54,7 +54,8 @@ class OrderController extends Controller
                         $customerQuery->where('name', 'like', "%{$search}%")
                             ->orWhere('email', 'like', "%{$search}%")
                             ->orWhere('mobile', 'like', "%{$search}%");
-                    });
+                    })
+                    ->orWhere('shipping_address', 'like', "%{$search}%");
             });
         }
 
@@ -73,9 +74,9 @@ class OrderController extends Controller
                 return [
                     'id' => $order->id,
                     'order_number' => $order->order_number,
-                    'customer_name' => $order->customer->name ?? 'N/A',
-                    'customer_email' => $order->customer->email ?? 'N/A',
-                    'customer_mobile' => $order->shipping_address['phone'] ?? $order->customer->mobile ?? 'N/A',
+                    'customer_name' => $order->customer->name ?? ($order->shipping_address['name'] ?? 'Guest'),
+                    'customer_email' => $order->customer->email ?? ($order->shipping_address['email'] ?? 'N/A'),
+                    'customer_mobile' => $order->shipping_address['phone'] ?? ($order->customer->mobile ?? 'N/A'),
                     'date' => $order->created_at->format('Y-m-d'),
                     'created_at' => $order->created_at,
                     'items_count' => $order->items_count,
@@ -85,7 +86,10 @@ class OrderController extends Controller
                     'payment_method' => match ($order->payment_method) {
                         'cod' => 'Cash on Delivery',
                         'online' => 'Online Payment',
-                        default => 'N/A',
+                        'upi' => 'UPI',
+                        'card' => 'Credit/Debit Card',
+                        'netbanking' => 'Net Banking',
+                        default => ucfirst($order->payment_method ?? 'N/A'),
                     },
 
                     'shipping_address' => $order->shipping_address ? implode(', ', array_filter($order->shipping_address)) : 'N/A',
@@ -298,23 +302,27 @@ class OrderController extends Controller
                         $customerQuery->where('name', 'like', "%{$search}%")
                             ->orWhere('email', 'like', "%{$search}%")
                             ->orWhere('mobile', 'like', "%{$search}%");
-                    });
+                    })
+                    ->orWhere('shipping_address', 'like', "%{$search}%");
             });
         }
 
         $orders = $query->get()->map(function ($order) {
             return [
                 'Order ID' => $order->order_number,
-                'Customer' => $order->customer->name ?? 'N/A',
-                'Email' => $order->customer->email ?? 'N/A',
-                'Phone' => $order->customer->mobile ?? 'N/A',
+                'Customer' => $order->customer->name ?? ($order->shipping_address['name'] ?? 'Guest'),
+                'Email' => $order->customer->email ?? ($order->shipping_address['email'] ?? 'N/A'),
+                'Phone' => $order->shipping_address['phone'] ?? ($order->customer->mobile ?? 'N/A'),
                 'Order Date' => $order->created_at->format('Y-m-d H:i'),
                 'Status' => ucfirst($order->status),
                 'Payment Status' => ucfirst(str_replace('_', ' ', $order->payment_status)),
                 'Payment Method' => match ($order->payment_method) {
                     'cod' => 'Cash on Delivery',
                     'online' => 'Online Payment',
-                    default => 'N/A',
+                    'upi' => 'UPI',
+                    'card' => 'Credit/Debit Card',
+                    'netbanking' => 'Net Banking',
+                    default => ucfirst($order->payment_method ?? 'N/A'),
                 },
 
                 'Items Count' => $order->items->count(),

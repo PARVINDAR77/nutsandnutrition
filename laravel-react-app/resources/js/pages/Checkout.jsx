@@ -95,21 +95,7 @@ const Checkout = () => {
         payload.offer_code = appliedOffer.code;
       }
 
-      // const response = await api.post('/customer/orders', payload);
-      
-      // Mock API Response because the backend endpoint does not exist yet
-      const response = {
-        data: {
-          success: true,
-          data: {
-            order_number: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
-            grand_total: grandTotal
-          }
-        }
-      };
-      
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const response = await api.post('/customer/orders', payload);
 
       if (response.data.success) {
         const orderNum = response.data.data.order_number;

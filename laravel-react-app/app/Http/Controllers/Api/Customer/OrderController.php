@@ -60,7 +60,7 @@ class OrderController extends Controller
             }
 
             $orders = Order::where('customer_id', $customerId)
-                ->with(['items.variant.product', 'items.variant.media'])
+                ->with(['items.variant.product', 'items.variant.images'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
