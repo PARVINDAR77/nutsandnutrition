@@ -558,11 +558,8 @@
                 const form = document.getElementById('offerForm');
                 const formData = new FormData();
 
-                // ----------------------------
-                // Collect normal form fields
-                // ----------------------------
                 Array.from(form.elements).forEach(el => {
-                    if (!el.name || el.type === 'submit' || el.type === 'button') return;
+                    if (!el.name || el.type === 'submit' || el.type === 'button' || el.disabled) return;
 
                     // Skip category & variant here (handled separately)
                     if (el.name === 'categories[]' || el.name === 'variants[]') return;

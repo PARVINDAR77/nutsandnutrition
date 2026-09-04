@@ -610,7 +610,7 @@ async function saveOffer() {
     // Collect form data
     const formElements = form.elements;
     for (let element of formElements) {
-        if (element.name && element.type !== 'button' && element.type !== 'submit') {
+        if (element.name && element.type !== 'button' && element.type !== 'submit' && !element.disabled) {
             if (element.type === 'checkbox') {
                 formData.append(element.name, element.checked ? '1' : '0');
             } else if (element.type === 'radio') {
