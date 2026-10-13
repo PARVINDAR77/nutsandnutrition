@@ -95,43 +95,43 @@ const ProductCard = ({ product }) => {
             transition={{ duration: 0.3 }}
             src={product.images[0]} 
             alt={product.name} 
-            style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '1rem', position: 'absolute', top: 0, left: 0 }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', padding: 0, position: 'absolute', top: 0, left: 0 }}
           />
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '1.25rem' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '0.5rem' }}>
           {product.brand && (
-            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--secondary-text)', letterSpacing: '1px', marginBottom: '0.25rem', fontWeight: '600' }}>
+            <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--secondary-text)', letterSpacing: '0.5px', marginBottom: '0', fontWeight: '600' }}>
               {product.brand.name}
             </span>
           )}
-          <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem', lineHeight: 1.3, fontWeight: '700', color: 'var(--dark-text)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <h3 style={{ fontSize: '0.85rem', marginBottom: '0.1rem', lineHeight: 1.1, fontWeight: '700', color: 'var(--dark-text)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {product.name}
           </h3>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginBottom: '0.75rem', color: '#ffb800', fontSize: '0.8rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.15rem', marginBottom: '0.15rem', color: '#ffb800', fontSize: '0.7rem' }}>
             {"★★★★★".split('').map((star, i) => <span key={i}>{star}</span>)}
-            {product.reviews ? <span style={{ color: 'var(--secondary-text)', fontSize: '0.75rem', marginLeft: '2px' }}>({product.reviews})</span> : null}
+            {product.reviews ? <span style={{ color: 'var(--secondary-text)', fontSize: '0.65rem', marginLeft: '2px' }}>({product.reviews})</span> : null}
           </div>
 
-          <div style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--dark-text)' }}>₹{selectedVariant.price}</span>
+          <div style={{ fontSize: '0.8rem', color: 'var(--secondary-text)', marginBottom: '0.25rem' }}>
+            <span style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--dark-text)' }}>₹{selectedVariant.price}</span>
           </div>
 
           {/* Variant Pills */}
-          <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '1rem', marginTop: 'auto' }}>
+          <div style={{ display: 'flex', gap: '0.2rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '0.4rem', marginTop: 'auto' }}>
             {product.variants.slice(0,3).map(v => (
               <button 
                 key={v.sku} 
                 onClick={(e) => { e.preventDefault(); setSelectedVariant(v); }}
                 style={{ 
-                  fontSize: '0.65rem', 
-                  padding: '4px 8px', 
+                  fontSize: '0.6rem', 
+                  padding: '2px 4px', 
                   border: selectedVariant.sku === v.sku ? '1px solid var(--primary-color)' : '1px solid var(--border)', 
                   backgroundColor: selectedVariant.sku === v.sku ? 'rgba(46, 125, 50, 0.05)' : 'transparent',
                   color: selectedVariant.sku === v.sku ? 'var(--primary-color)' : 'var(--secondary-text)',
-                  borderRadius: '4px', 
+                  borderRadius: '3px', 
                   cursor: 'pointer',
                   transition: 'all 0.2s',
                   fontWeight: selectedVariant.sku === v.sku ? '600' : '400'
@@ -156,29 +156,29 @@ const ProductCard = ({ product }) => {
               backgroundColor: isAdded ? '#E52F36' : '#68B348', // red : light green
               color: 'white',
               border: 'none',
-              padding: '0.8rem',
-              borderRadius: '12px',
+              padding: '0.4rem',
+              borderRadius: '6px',
               fontWeight: '600',
-              fontSize: '0.9rem',
+              fontSize: '0.75rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.5rem',
+              gap: '0.25rem',
               cursor: isAdded ? 'default' : 'pointer',
               transition: 'background-color 0.3s, box-shadow 0.3s',
-              boxShadow: isAdded ? 'none' : '0 8px 15px rgba(104, 179, 72, 0.2)'
+              boxShadow: isAdded ? 'none' : '0 2px 5px rgba(104, 179, 72, 0.2)'
             }}
             onMouseOver={(e) => !isAdded && (e.currentTarget.style.backgroundColor = '#5ca040')} // slightly darker green on hover
             onMouseOut={(e) => !isAdded && (e.currentTarget.style.backgroundColor = '#68B348')} // back to light green
           >
             {isAdded ? (
               <>
-                <FiCheck size={18} /> ADDED!
+                <FiCheck size={14} /> ADDED!
               </>
             ) : (
-              <>
-                <FiShoppingCart size={16} /> ADD TO CART
-              </>
+               <>
+                <FiShoppingCart size={14} /> ADD TO CART
+               </>
             )}
           </motion.button>
         </div>

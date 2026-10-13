@@ -17,11 +17,11 @@ class ContactController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => [
-                'address_line_1' => $settings['address_line_1'] ?? '123 Healthy Street, Green City',
-                'address_line_2' => $settings['address_line_2'] ?? 'India - 400001',
-                'phone' => $settings['phone'] ?? '+91 98765 43210',
-                'hours' => $settings['hours'] ?? 'Mon - Fri, 9am - 6pm',
-                'email' => $settings['email'] ?? 'hello@nutsandnutrition.com',
+                'address_line_1' => $settings['address_line_1'] ?? '2/16 Arved Transcube Plaza, Near Ranip Bus Depo Terminal, Ranip',
+                'address_line_2' => $settings['address_line_2'] ?? 'Ahmedabad, Gujarat, 382480',
+                'phone' => $settings['phone'] ?? '+91 9106234089',
+                'hours' => $settings['hours'] ?? 'Mon - Sat, 9am - 7pm',
+                'email' => $settings['email'] ?? 'nutsandnutrition@gmail.com',
                 'response_time' => $settings['response_time'] ?? 'We reply within 24 hours',
             ]
         ]);

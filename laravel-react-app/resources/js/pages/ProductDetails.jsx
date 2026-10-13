@@ -51,9 +51,13 @@ const ProductDetails = () => {
 
   if (!product) {
     return (
-      <div className="container" style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <h2>Product not found.</h2>
-        <Button onClick={() => navigate('/shop')} style={{ marginTop: '1rem' }}>Back to Shop</Button>
+      <div className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
+        <span style={{ fontSize: '3.5rem', display: 'block', marginBottom: '1rem' }}>🌱</span>
+        <h2 style={{ color: 'var(--dark-brown)', fontFamily: 'var(--font-display)', fontSize: '2rem', marginBottom: '0.5rem' }}>Coming Soon</h2>
+        <p style={{ color: 'var(--secondary-text)', maxWidth: '450px', margin: '0 auto 1.5rem', lineHeight: 1.6 }}>
+          This product is currently in preparation or arriving soon to our collection.
+        </p>
+        <Button onClick={() => navigate('/shop')}>Back to Shop</Button>
       </div>
     );
   }

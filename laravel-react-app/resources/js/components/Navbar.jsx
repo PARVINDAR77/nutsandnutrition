@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiHeart } from 'react-icons/fi';
+import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiHeart, FiPhone, FiMail } from 'react-icons/fi';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -83,8 +83,13 @@ const Navbar = () => {
               <span>Free Shipping on orders above ₹799</span>
             )}
           </div>
-          <div style={{ opacity: 0.9 }}>
-            100% Natural &bull; Premium Quality &bull; Freshly Packed
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', opacity: 0.95, flexWrap: 'wrap' }}>
+            <a href="tel:+919106234089" style={{ color: 'white', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <FiPhone size={13} /> +91 9106234089
+            </a>
+            <a href="mailto:nutsandnutrition@gmail.com" style={{ color: 'white', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <FiMail size={13} /> nutsandnutrition@gmail.com
+            </a>
           </div>
         </div>
       </div>

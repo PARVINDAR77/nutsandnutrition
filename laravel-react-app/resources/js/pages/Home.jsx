@@ -283,11 +283,19 @@ const Home = () => {
               SHOP BY CATEGORY <span style={{ fontSize: '1.2rem' }}>🍃</span>
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
-            {categories.slice(0, 3).map((category) => (
-              <CategoryCard key={category.id} category={category} />
-            ))}
-          </div>
+          {categories.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3.5rem 2rem', backgroundColor: '#fdfbf7', borderRadius: '20px', border: '1px dashed #68B348', maxWidth: '600px', margin: '0 auto' }}>
+              <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.5rem' }}>🍃</span>
+              <h3 style={{ color: 'var(--dark-brown)', fontFamily: 'var(--font-display)', fontSize: '1.5rem', marginBottom: '0.25rem' }}>Coming Soon</h3>
+              <p style={{ color: 'var(--secondary-text)', margin: 0 }}>Categories are being updated. Check back shortly!</p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
+              {categories.slice(0, 3).map((category) => (
+                <CategoryCard key={category.id} category={category} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -381,28 +389,50 @@ const Home = () => {
               </h3>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-              {featuredProducts.map((product, i) => (
-                <motion.div 
-                  key={product.id}
-                  initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ delay: i * 0.15, type: "spring", stiffness: 200, damping: 20 }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
-            </div>
+            featuredProducts.length === 0 ? (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '4rem 2rem', 
+                backgroundColor: '#fdfbf7', 
+                borderRadius: '24px', 
+                border: '1px dashed #68B348', 
+                marginBottom: '2rem' 
+              }}>
+                <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.75rem' }}>🌱</span>
+                <h3 style={{ color: 'var(--dark-brown)', fontFamily: 'var(--font-display)', fontSize: '1.75rem', marginBottom: '0.5rem' }}>Coming Soon</h3>
+                <p style={{ color: 'var(--secondary-text)', maxWidth: '420px', margin: '0 auto 1.5rem', lineHeight: 1.6 }}>
+                  We are preparing fresh, premium nutrition products for this collection. Stay tuned!
+                </p>
+                <Link to="/contact" style={{ textDecoration: 'none' }}>
+                  <Button variant="outline">Contact Us For Inquiries</Button>
+                </Link>
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+                {featuredProducts.map((product, i) => (
+                  <motion.div 
+                    key={product.id}
+                    initial={{ opacity: 0, scale: 0.8, y: 30 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ delay: i * 0.15, type: "spring", stiffness: 200, damping: 20 }}
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                ))}
+              </div>
+            )
           )}
 
           {/* Carousel Dots Mock */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--primary-green)' }}></div>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--border)' }}></div>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--border)' }}></div>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--border)' }}></div>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--border)' }}></div>
-          </div>
+          {featuredProducts.length > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--primary-green)' }}></div>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--border)' }}></div>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--border)' }}></div>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--border)' }}></div>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--border)' }}></div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -417,7 +447,7 @@ const Home = () => {
               {section.subtitle && <p style={{ color: 'var(--secondary-text)', marginTop: '0.5rem' }}>{section.subtitle}</p>}
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: (!section.products || section.products.length === 0) ? '1fr' : 'repeat(4, minmax(0, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
               {section.products && section.products.map((product, i) => (
                 <motion.div 
                   key={product.id}
@@ -431,8 +461,10 @@ const Home = () => {
               ))}
               
               {(!section.products || section.products.length === 0) && (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--secondary-text)' }}>
-                  No products found for this section.
+                <div style={{ textAlign: 'center', padding: '3.5rem 2rem', backgroundColor: '#fdfbf7', borderRadius: '20px', border: '1px dashed #68B348' }}>
+                  <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.5rem' }}>🍃</span>
+                  <h3 style={{ color: 'var(--dark-brown)', fontFamily: 'var(--font-display)', fontSize: '1.5rem', marginBottom: '0.25rem' }}>Coming Soon</h3>
+                  <p style={{ color: 'var(--secondary-text)', margin: 0 }}>Exciting products for this section are arriving shortly!</p>
                 </div>
               )}
             </div>

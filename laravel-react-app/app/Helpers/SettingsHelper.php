@@ -155,11 +155,11 @@ class SettingsHelper
     public static function storeInfo(): array
     {
         return [
-            'name' => self::get('store_name', 'Dr. Kinjal'),
-            'email' => self::get('store_email', 'DrKinjal.official@gmail.com'),
-            'phone' => self::get('store_phone', '9428289077'),
+            'name' => self::get('store_name', 'Nuts & Nutrition'),
+            'email' => self::get('store_email', 'nutsandnutrition@gmail.com'),
+            'phone' => self::get('store_phone', '9106234089'),
             'phone_alt' => self::get('store_phone_alt', ''),
-            'address' => self::get('store_address', "Abha Multi Speciality Clinic\nA-401, Hanuman Madhi, Golden Club,\n402, Nirmala Convent Rd, Opp. Chetna Medical Store,\nRajkot, Gujarat - 360007"),
+            'address' => self::get('store_address', "2/16 Arved Transcube Plaza, Near Ranip Bus Depo Terminal, Ranip,\nAhmedabad, Gujarat, 382480"),
             'currency' => self::get('currency', 'INR'),
             'currency_symbol' => self::currencySymbol()
         ];
@@ -171,9 +171,9 @@ class SettingsHelper
     public static function seoSettings(): array
     {
         return [
-            'meta_title' => self::get('meta_title', 'Dr. Kinjal - Clinically effective, result oriented products.'),
-            'meta_description' => self::get('meta_description', 'Clinically effective, result oriented products by Dr. Kinjal. Quality skincare and beauty solutions.'),
-            'meta_keywords' => self::get('meta_keywords', 'skincare, beauty, natural, organic, dr kinjal'),
+            'meta_title' => self::get('meta_title', 'Nuts & Nutrition - Premium Health Foods & Nutrition Blends'),
+            'meta_description' => self::get('meta_description', 'Premium quality nuts, seeds, and sports nutrition products for a healthy lifestyle by Nuts & Nutrition.'),
+            'meta_keywords' => self::get('meta_keywords', 'nuts, nutrition, whey protein, healthy snacks, seeds, health foods'),
             'google_analytics' => self::get('google_analytics', '')
         ];
     }

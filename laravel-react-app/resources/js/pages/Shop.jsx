@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiFilter } from 'react-icons/fi';
 import ProductCard from '../components/ProductCard';
@@ -252,32 +252,67 @@ const Shop = () => {
         <div>
           {filteredProducts.length === 0 ? (
             <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              style={{ textAlign: 'center', padding: '6rem 0', backgroundColor: 'white', borderRadius: '24px', border: `1px solid ${colors.cream}` }}
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }}
+              style={{ 
+                textAlign: 'center', 
+                padding: '5rem 2rem', 
+                backgroundColor: 'white', 
+                borderRadius: '24px', 
+                border: `1px solid ${colors.cream}`,
+                boxShadow: '0 15px 35px rgba(0,0,0,0.03)'
+              }}
             >
-              <h3 style={{ color: colors.darkBrown, fontSize: '1.5rem', marginBottom: '0.5rem', fontFamily: 'var(--font-display)' }}>No products found.</h3>
-              <p style={{ color: colors.lightText }}>Try adjusting your search or category filters.</p>
-              <button 
-                onClick={() => {setSearchQuery(''); setSelectedCategory('all');}}
-                style={{ 
-                  marginTop: '1.5rem',
-                  backgroundColor: 'transparent',
-                  border: `2px solid ${colors.darkGreen}`,
-                  color: colors.darkGreen,
-                  padding: '0.75rem 2rem',
-                  borderRadius: '30px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => { e.target.style.backgroundColor = colors.darkGreen; e.target.style.color = 'white'; }}
-                onMouseLeave={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = colors.darkGreen; }}
-              >
-                Clear Filters
-              </button>
+              <span style={{ fontSize: '3.5rem', display: 'block', marginBottom: '1rem' }}>🌱</span>
+              <h3 style={{ color: colors.darkBrown, fontSize: '2rem', marginBottom: '0.75rem', fontFamily: 'var(--font-display)' }}>
+                {products.length === 0 ? 'Coming Soon' : (searchQuery ? 'No Products Found' : 'Coming Soon')}
+              </h3>
+              <p style={{ color: colors.lightText, maxWidth: '500px', margin: '0 auto 1.5rem', fontSize: '1.05rem', lineHeight: 1.6 }}>
+                {products.length === 0 
+                  ? 'We are stocking our shelves with fresh, premium nutrition products. Stay tuned as we launch our collection!' 
+                  : (searchQuery 
+                      ? 'No products matched your search. Try another keyword or clear filters.' 
+                      : 'Products for this category are arriving soon!')}
+              </p>
+              {products.length > 0 && (searchQuery || selectedCategory !== 'all') ? (
+                <button 
+                  onClick={() => {setSearchQuery(''); setSelectedCategory('all');}}
+                  style={{ 
+                    backgroundColor: 'transparent',
+                    border: `2px solid ${colors.darkGreen}`,
+                    color: colors.darkGreen,
+                    padding: '0.75rem 2rem',
+                    borderRadius: '30px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => { e.target.style.backgroundColor = colors.darkGreen; e.target.style.color = 'white'; }}
+                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = colors.darkGreen; }}
+                >
+                  Clear Filters
+                </button>
+              ) : (
+                <Link to="/contact" style={{ textDecoration: 'none' }}>
+                  <button 
+                    style={{ 
+                      backgroundColor: colors.darkGreen,
+                      border: 'none',
+                      color: 'white',
+                      padding: '0.85rem 2.2rem',
+                      borderRadius: '30px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      boxShadow: '0 8px 20px rgba(104,179,72,0.3)'
+                    }}
+                  >
+                    Contact Us For Inquiries
+                  </button>
+                </Link>
+              )}
             </motion.div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1.5rem' }}>
               {filteredProducts.map((product, i) => (
                 <motion.div 
                   key={product.id}

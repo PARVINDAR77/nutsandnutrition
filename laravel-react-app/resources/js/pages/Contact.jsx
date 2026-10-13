@@ -23,9 +23,24 @@ const Contact = () => {
   const [error, setError] = useState('');
   
   const [contactInfo, setContactInfo] = useState([
-    { icon: FiMapPin, title: 'Visit Us', desc: '123 Healthy Street, Green City\nIndia - 400001' },
-    { icon: FiPhone, title: 'Call Us', desc: '+91 98765 43210\nMon - Fri, 9am - 6pm' },
-    { icon: FiMail, title: 'Email Us', desc: 'hello@nutsandnutrition.com\nWe reply within 24 hours' }
+    { 
+      icon: FiMapPin, 
+      title: 'Visit Us', 
+      desc: '2/16 Arved Transcube Plaza, Near Ranip Bus Depo Terminal, Ranip\nAhmedabad, Gujarat, 382480',
+      link: 'https://maps.google.com/?q=2/16+Arved+Transcube+Plaza,+Ranip,+Ahmedabad,+Gujarat+382480'
+    },
+    { 
+      icon: FiPhone, 
+      title: 'Call Us', 
+      desc: '+91 9106234089\nMon - Sat, 9am - 7pm',
+      link: 'tel:+919106234089'
+    },
+    { 
+      icon: FiMail, 
+      title: 'Email Us', 
+      desc: 'nutsandnutrition@gmail.com\nWe reply within 24 hours',
+      link: 'mailto:nutsandnutrition@gmail.com'
+    }
   ]);
 
   useEffect(() => {
@@ -35,9 +50,24 @@ const Contact = () => {
         if (response.data?.status === 'success') {
           const data = response.data.data;
           setContactInfo([
-            { icon: FiMapPin, title: 'Visit Us', desc: `${data.address_line_1}\n${data.address_line_2 || ''}` },
-            { icon: FiPhone, title: 'Call Us', desc: `${data.phone}\n${data.hours}` },
-            { icon: FiMail, title: 'Email Us', desc: `${data.email}\n${data.response_time}` }
+            { 
+              icon: FiMapPin, 
+              title: 'Visit Us', 
+              desc: `${data.address_line_1}\n${data.address_line_2 || ''}`,
+              link: `https://maps.google.com/?q=${encodeURIComponent(`${data.address_line_1}, ${data.address_line_2 || ''}`)}`
+            },
+            { 
+              icon: FiPhone, 
+              title: 'Call Us', 
+              desc: `${data.phone}\n${data.hours}`,
+              link: `tel:${data.phone.replace(/\s+/g, '')}`
+            },
+            { 
+              icon: FiMail, 
+              title: 'Email Us', 
+              desc: `${data.email}\n${data.response_time}`,
+              link: `mailto:${data.email}`
+            }
           ]);
         }
       } catch (err) {
@@ -143,11 +173,17 @@ const Contact = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ x: 10, backgroundColor: 'white', boxShadow: '0 15px 35px rgba(0,0,0,0.06)' }}
+                onClick={() => {
+                  if (info.link) {
+                    if (info.link.startsWith('http')) window.open(info.link, '_blank', 'noopener,noreferrer');
+                    else window.location.href = info.link;
+                  }
+                }}
                 style={{ 
                   display: 'flex', 
                   gap: '1.5rem', 
                   alignItems: 'center', 
-                  padding: '1.5rem',
+                  padding: '1.5rem', 
                   borderRadius: '20px',
                   backgroundColor: 'transparent',
                   border: `1px solid rgba(0,0,0,0.03)`,

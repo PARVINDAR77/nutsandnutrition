@@ -167,11 +167,14 @@ const Footer = () => {
           {/* BRAND COLUMN */}
           <motion.div variants={fadeUp} className="footer-brand">
             <img src={logo} alt="Nuts & Nutrition" className="footer-logo" />
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+            <p style={{ fontSize: '0.9rem', lineHeight: '1.6', color: 'var(--brand-red)', opacity: 0.9, maxWidth: '240px', marginBottom: '1.25rem' }}>
+              Pure, natural and wholesome nutrition crafted for your healthy lifestyle.
+            </p>
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram"><FiInstagram size={20} /></a>
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Facebook"><FiFacebook size={20} /></a>
               <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="YouTube"><FiYoutube size={20} /></a>
-              <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="WhatsApp"><FaWhatsapp size={20} /></a>
+              <a href="https://wa.me/919106234089" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="WhatsApp"><FaWhatsapp size={20} /></a>
             </div>
           </motion.div>
 
@@ -196,6 +199,31 @@ const Footer = () => {
               <li><Link to="/wishlist" className="nav-link"><FiArrowRight className="arrow" />Wishlist</Link></li>
               <li><Link to="/cart" className="nav-link"><FiArrowRight className="arrow" />Shopping Cart</Link></li>
               <li><Link to="/login" className="nav-link"><FiArrowRight className="arrow" />Login / Register</Link></li>
+            </ul>
+          </motion.div>
+
+          {/* CONTACT INFO */}
+          <motion.div variants={fadeUp}>
+            <h4 style={headingStyle}>CONTACT US</h4>
+            <ul style={listStyle}>
+              <li className="contact-item">
+                <FiMapPin size={22} className="contact-icon" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <span style={{ lineHeight: 1.5, fontSize: '0.9rem' }}>
+                  2/16 Arved Transcube Plaza, Near Ranip Bus Depo Terminal, Ranip, Ahmedabad, Gujarat, 382480
+                </span>
+              </li>
+              <li className="contact-item">
+                <FiPhone size={18} className="contact-icon" style={{ flexShrink: 0 }} />
+                <a href="tel:+919106234089" style={{ color: 'inherit', textDecoration: 'none', fontSize: '0.9rem', fontWeight: '600' }}>
+                  +91 9106234089
+                </a>
+              </li>
+              <li className="contact-item">
+                <FiMail size={18} className="contact-icon" style={{ flexShrink: 0 }} />
+                <a href="mailto:nutsandnutrition@gmail.com" style={{ color: 'inherit', textDecoration: 'none', fontSize: '0.9rem', wordBreak: 'break-all' }}>
+                  nutsandnutrition@gmail.com
+                </a>
+              </li>
             </ul>
           </motion.div>
 
@@ -226,7 +254,7 @@ const Footer = () => {
           color: 'var(--brand-red)',
           fontSize: '0.9rem'
         }}>
-          <p style={{ margin: 0 }}>&copy; 2026 Nutri. All rights reserved.</p>
+          <p style={{ margin: 0 }}>&copy; 2026 Nuts & Nutrition. All rights reserved.</p>
 
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
             <span style={{ fontSize: '0.85rem' }}>We accept</span>
