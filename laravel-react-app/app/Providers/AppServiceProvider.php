@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        if (env('APP_ENV') === 'production') {
+        if (app()->environment('production') || !in_array(request()->getHost(), ['localhost', '127.0.0.1'])) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
