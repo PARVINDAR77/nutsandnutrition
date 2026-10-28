@@ -4,7 +4,8 @@
   --bg-color: #fdfaf6;
   --text-color: #333333;
   --light-gray: #e0e0e0;
-  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
 }
 
 * {
