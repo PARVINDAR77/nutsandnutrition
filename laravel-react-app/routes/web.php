@@ -325,10 +325,55 @@ Route::get('/run-migration', function () {
     }
 });
 
-Route::get('/check-contact-messages', function () {
-    return \App\Models\ContactMessage::count();
+Route::get('/setup-admin', function () {
+    try {
+        $admins = [
+            [
+                'email' => 'admin@example.com',
+                'name' => 'Super Admin',
+                'password' => 'Admin@123',
+            ],
+            [
+                'email' => 'nutsandnutrition@gmail.com',
+                'name' => 'Nuts & Nutrition Admin',
+                'password' => 'Admin@123',
+            ],
+        ];
+
+        $results = [];
+        foreach ($admins as $item) {
+            $admin = \App\Models\Admin::updateOrCreate(
+                ['email' => $item['email']],
+                [
+                    'name' => $item['name'],
+                    'password' => \Illuminate\Support\Facades\Hash::make($item['password']),
+                    'role' => 'admin',
+                    'status' => true,
+                    'password_changed_at' => now(),
+                ]
+            );
+            $results[] = [
+                'email' => $admin->email,
+                'name' => $admin->name,
+                'status' => $admin->status ? 'Active' : 'Inactive',
+                'password' => $item['password']
+            ];
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Admin accounts created and passwords set successfully!',
+            'accounts' => $results,
+            'login_url' => url('/admin/login')
+        ], 200, [], JSON_PRETTY_PRINT);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+    }
 });
 
+Route::get('/check-admins', function () {
+    return response()->json(\App\Models\Admin::all(['id', 'name', 'email', 'role', 'status']), 200, [], JSON_PRETTY_PRINT);
+});
 
 /*
 |--------------------------------------------------------------------------
