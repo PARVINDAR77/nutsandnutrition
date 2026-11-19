@@ -1,13 +1,27 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiTrash2 } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import Button from './Button';
 import QuantitySelector from './QuantitySelector';
+import AuthModal from './AuthModal';
 
 const CartDrawer = () => {
   const { isCartOpen, closeCart, cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const handleCheckoutClick = () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+    } else {
+      closeCart();
+      navigate('/checkout');
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -124,13 +138,27 @@ const CartDrawer = () => {
                   <Link to="/cart" onClick={closeCart} style={{ textDecoration: 'none' }}>
                     <Button variant="outline" fullWidth>VIEW CART</Button>
                   </Link>
-                  <Link to="/checkout" onClick={closeCart} style={{ textDecoration: 'none' }}>
-                    <Button variant="primary" fullWidth>CHECKOUT</Button>
-                  </Link>
+                  <Button 
+                    variant="primary" 
+                    fullWidth
+                    onClick={handleCheckoutClick}
+                  >
+                    CHECKOUT
+                  </Button>
                 </div>
               </div>
             )}
           </motion.div>
+
+          <AuthModal 
+            isOpen={showAuthModal}
+            onClose={() => setShowAuthModal(false)}
+            onSuccess={() => {
+              closeCart();
+              navigate('/checkout');
+            }}
+            title="Sign in or register to checkout"
+          />
         </>
       )}
     </AnimatePresence>

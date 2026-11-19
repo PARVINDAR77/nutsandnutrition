@@ -1,15 +1,28 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiTrash2, FiArrowRight, FiShield } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import QuantitySelector from '../components/QuantitySelector';
+import AuthModal from '../components/AuthModal';
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, taxTotal } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const shipping = cartTotal > 799 || cartTotal === 0 ? 0 : 50;
   const grandTotal = cartTotal + shipping + taxTotal;
+
+  const handleCheckoutClick = () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+    } else {
+      navigate('/checkout');
+    }
+  };
 
   if (cartItems.length === 0) {
     return (
@@ -134,11 +147,21 @@ const Cart = () => {
             </div>
           </div>
 
-          <Link to="/checkout" style={{ textDecoration: 'none' }}>
-            <Button variant="primary" fullWidth size="lg">
-              PROCEED TO CHECKOUT
-            </Button>
-          </Link>
+          <Button 
+            variant="primary" 
+            fullWidth 
+            size="lg"
+            onClick={handleCheckoutClick}
+          >
+            PROCEED TO CHECKOUT
+          </Button>
+
+          <AuthModal 
+            isOpen={showAuthModal}
+            onClose={() => setShowAuthModal(false)}
+            onSuccess={() => navigate('/checkout')}
+            title="Sign in or register to checkout"
+          />
           
           <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--secondary-text)', fontSize: '0.85rem' }}>
             <FiShield /> Secure Checkout Guaranteed

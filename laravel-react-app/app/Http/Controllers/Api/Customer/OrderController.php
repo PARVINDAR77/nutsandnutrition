@@ -93,6 +93,15 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        $customerId = auth('customer_api')->id();
+        if (!$customerId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please login or create an account to place your order.',
+                'require_auth' => true
+            ], 401);
+        }
+
         $request->validate([
             'items' => 'required|array|min:1',
             'items.*.variant_id' => 'required|exists:product_variants,id',

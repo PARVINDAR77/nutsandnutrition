@@ -4,8 +4,10 @@ import { FiStar, FiHeart, FiCheck, FiTruck, FiShield } from 'react-icons/fi';
 import { productService } from '../services/productService';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 import QuantitySelector from '../components/QuantitySelector';
 import Button from '../components/Button';
+import AuthModal from '../components/AuthModal';
 import { useAutoRefresh } from '../context/AutoRefreshContext';
 
 const ProductDetails = () => {
@@ -13,11 +15,13 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { isAuthenticated } = useAuth();
   
   const [product, setProduct] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const { refreshTrigger } = useAutoRefresh();
 
   useEffect(() => {
@@ -68,7 +72,11 @@ const ProductDetails = () => {
 
   const handleBuyNow = () => {
     addToCart(product, selectedVariant, quantity);
-    navigate('/checkout');
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+    } else {
+      navigate('/checkout');
+    }
   };
 
   return (
@@ -401,6 +409,13 @@ const ProductDetails = () => {
           </div>
         </div>
       )}
+
+      <AuthModal 
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => navigate('/checkout')}
+        title="Sign in or register to complete your purchase"
+      />
     </div>
   );
 };

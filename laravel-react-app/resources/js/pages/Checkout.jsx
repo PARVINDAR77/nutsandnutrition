@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FiCheckCircle, FiShield, FiTruck } from 'react-icons/fi';
+import { FiCheckCircle, FiShield, FiTruck, FiUserCheck, FiLogIn } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import { motion } from 'framer-motion';
 import api from '../services/api';
 import { offerService } from '../services/offerService';
 import PaymentModal from '../components/PaymentModal';
+import AuthModal from '../components/AuthModal';
 
 const Checkout = () => {
   const { cartItems, cartTotal, taxTotal, clearCart } = useCart();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   
   const [isSuccess, setIsSuccess] = useState(false);
@@ -17,6 +20,9 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [finalTotal, setFinalTotal] = useState(0);
+
+  // Auth Modal State
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Payment Modal State
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -34,6 +40,34 @@ const Checkout = () => {
     city: '',
     pin_code: ''
   });
+
+  // Autofill user details when logged in
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        email: prev.email || user.email || '',
+        phone: prev.phone || user.mobile || '',
+      }));
+
+      // Fetch saved default address if available
+      api.get('/customer/addresses').then(res => {
+        if (res.data.success && res.data.data && res.data.data.length > 0) {
+          const def = res.data.data.find(a => a.is_default) || res.data.data[0];
+          setFormData(prev => ({
+            ...prev,
+            name: def.name || prev.name || user.name || '',
+            phone: def.phone || prev.phone || user.mobile || '',
+            address_line_1: def.address_line_1 || prev.address_line_1,
+            address_line_2: def.address_line_2 || prev.address_line_2,
+            city: def.city || prev.city,
+            pin_code: def.pin_code || prev.pin_code
+          }));
+        }
+      }).catch(() => {});
+    }
+  }, [user]);
 
   // Offer State
   const [offerCode, setOfferCode] = useState('');
@@ -78,6 +112,12 @@ const Checkout = () => {
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
+
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+
     setIsLoading(true);
     setErrorMsg('');
 
@@ -168,6 +208,13 @@ const Checkout = () => {
 
   return (
     <div className="container" style={{ paddingTop: '3rem', paddingBottom: '5rem' }}>
+      <AuthModal 
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => setShowAuthModal(false)}
+        title="Sign in or register to place your order"
+      />
+
       <PaymentModal 
         isOpen={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}
@@ -176,7 +223,60 @@ const Checkout = () => {
         orderId={modalOrderId}
         paymentMethod={paymentMethod}
       />
-      <h1 style={{ marginBottom: '2rem', color: 'var(--dark-green)' }}>Checkout</h1>
+      <h1 style={{ marginBottom: '1.5rem', color: 'var(--dark-green)' }}>Checkout</h1>
+
+      {/* Account Login / Register Banner if guest */}
+      {!isAuthenticated ? (
+        <div style={{
+          backgroundColor: 'var(--soft-green)',
+          border: '1px solid var(--primary-green)',
+          borderRadius: 'var(--radius-md)',
+          padding: '1rem 1.5rem',
+          marginBottom: '2rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '1rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <FiLogIn size={24} color="var(--dark-green)" />
+            <div>
+              <strong style={{ color: 'var(--dark-green)', display: 'block', fontSize: '0.95rem' }}>
+                Account Required to Place Order
+              </strong>
+              <span style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+                Please sign in or create an account so you can track your order status in real time.
+              </span>
+            </div>
+          </div>
+          <Button 
+            type="button" 
+            variant="primary" 
+            size="sm" 
+            onClick={() => setShowAuthModal(true)}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            SIGN IN / REGISTER
+          </Button>
+        </div>
+      ) : (
+        <div style={{
+          backgroundColor: '#f6fbf4',
+          border: '1px solid #c7e6c0',
+          borderRadius: 'var(--radius-md)',
+          padding: '0.75rem 1.25rem',
+          marginBottom: '2rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          fontSize: '0.9rem',
+          color: 'var(--dark-green)'
+        }}>
+          <FiUserCheck size={18} />
+          <span>Ordering as <strong>{user?.name || user?.email}</strong> ({user?.email})</span>
+        </div>
+      )}
       
       {errorMsg && (
         <div style={{ padding: '1rem', backgroundColor: '#ffe5e5', color: '#c71f25', borderRadius: '8px', marginBottom: '2rem' }}>
