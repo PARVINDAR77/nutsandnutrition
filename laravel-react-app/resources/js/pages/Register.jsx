@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
 import { useAuth } from '../context/AuthContext';
@@ -17,12 +17,15 @@ const Register = () => {
   const [error, setError] = useState('');
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectParam = searchParams.get('redirect');
+  const redirectUrl = redirectParam || '/account';
 
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/account');
+      navigate(redirectUrl, { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, redirectUrl]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -94,7 +97,7 @@ const Register = () => {
     const result = await register(userData);
     
     if (result.success) {
-      navigate('/account');
+      navigate(redirectUrl, { replace: true });
     } else {
       setError(result.error || 'Registration failed. Please try again.');
     }
@@ -121,6 +124,12 @@ const Register = () => {
           <h2 style={{ fontSize: '1.5rem', color: 'var(--dark-green)' }}>Create Account</h2>
           <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>Join us for a healthier lifestyle.</p>
         </div>
+
+        {redirectParam === '/checkout' && (
+          <div style={{ backgroundColor: '#ecfdf5', border: '1px solid #a7f3d0', color: '#065f46', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: '1.4' }}>
+            🔒 <strong>Almost there!</strong> Create your account to complete your order. Your cart items are saved.
+          </div>
+        )}
 
         {error && (
           <div style={{ backgroundColor: 'var(--light-red)', color: 'var(--brand-red)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
@@ -199,7 +208,12 @@ const Register = () => {
 
         <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.9rem' }}>
           <span style={{ color: 'var(--secondary-text)' }}>Already have an account? </span>
-          <Link to="/login" style={{ color: 'var(--primary-green)', fontWeight: '600' }}>Login</Link>
+          <Link 
+            to={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : '/login'} 
+            style={{ color: 'var(--primary-green)', fontWeight: '600' }}
+          >
+            Login
+          </Link>
         </div>
       </motion.div>
     </div>

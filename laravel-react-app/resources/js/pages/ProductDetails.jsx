@@ -73,7 +73,7 @@ const ProductDetails = () => {
   const handleBuyNow = () => {
     addToCart(product, selectedVariant, quantity);
     if (!isAuthenticated) {
-      setShowAuthModal(true);
+      navigate('/login?redirect=/checkout');
     } else {
       navigate('/checkout');
     }

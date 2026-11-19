@@ -15,10 +15,10 @@ const CartDrawer = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleCheckoutClick = () => {
+    closeCart();
     if (!isAuthenticated) {
-      setShowAuthModal(true);
+      navigate('/login?redirect=/checkout');
     } else {
-      closeCart();
       navigate('/checkout');
     }
   };

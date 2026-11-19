@@ -18,7 +18,7 @@ const Cart = () => {
 
   const handleCheckoutClick = () => {
     if (!isAuthenticated) {
-      setShowAuthModal(true);
+      navigate('/login?redirect=/checkout');
     } else {
       navigate('/checkout');
     }

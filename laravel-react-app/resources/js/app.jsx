@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import CartDrawer from './components/CartDrawer';
 import StartBanner from './components/StartBanner';
+import TimedWelcomeModal from './components/TimedWelcomeModal';
 
 // Pages
 import Home from './pages/Home';
@@ -54,6 +55,7 @@ function App() {
           <LoadingScreen isLoading={isLoading} />
           <CartDrawer />
           <StartBanner />
+          <TimedWelcomeModal />
           
           <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />

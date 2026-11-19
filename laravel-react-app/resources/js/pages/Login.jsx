@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
 import { useAuth } from '../context/AuthContext';
@@ -11,12 +11,15 @@ const Login = () => {
   const [error, setError] = useState('');
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectParam = searchParams.get('redirect');
+  const redirectUrl = redirectParam || '/account';
 
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/account');
+      navigate(redirectUrl, { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, redirectUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +30,7 @@ const Login = () => {
     
     const result = await login(email, password);
     if (result.success) {
-      navigate('/account');
+      navigate(redirectUrl, { replace: true });
     } else {
       setError(result.error || 'Login failed. Please check your credentials.');
     }
@@ -54,6 +57,12 @@ const Login = () => {
           <h2 style={{ fontSize: '1.5rem', color: 'var(--dark-green)' }}>Welcome Back</h2>
           <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>Please enter your details to sign in.</p>
         </div>
+
+        {redirectParam === '/checkout' && (
+          <div style={{ backgroundColor: '#ecfdf5', border: '1px solid #a7f3d0', color: '#065f46', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: '1.4' }}>
+            🔒 <strong>Checkout Requirement:</strong> Please sign in to complete your order. Your cart items are saved and ready.
+          </div>
+        )}
 
         {error && (
           <div style={{ backgroundColor: 'var(--light-red)', color: 'var(--brand-red)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
@@ -97,7 +106,12 @@ const Login = () => {
 
         <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.9rem' }}>
           <span style={{ color: 'var(--secondary-text)' }}>Don't have an account? </span>
-          <Link to="/register" style={{ color: 'var(--primary-green)', fontWeight: '600' }}>Create Account</Link>
+          <Link 
+            to={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register'} 
+            style={{ color: 'var(--primary-green)', fontWeight: '600' }}
+          >
+            Create Account
+          </Link>
         </div>
       </motion.div>
     </div>

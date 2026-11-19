@@ -121,7 +121,7 @@ const Checkout = () => {
     e.preventDefault();
 
     if (!isAuthenticated) {
-      setShowAuthModal(true);
+      navigate('/login?redirect=/checkout');
       return;
     }
 
@@ -257,15 +257,18 @@ const Checkout = () => {
               </span>
             </div>
           </div>
-          <Button 
-            type="button" 
-            variant="primary" 
-            size="sm" 
-            onClick={() => setShowAuthModal(true)}
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            SIGN IN / REGISTER
-          </Button>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <Link to="/login?redirect=/checkout" style={{ textDecoration: 'none' }}>
+              <Button type="button" variant="primary" size="sm">
+                SIGN IN
+              </Button>
+            </Link>
+            <Link to="/register?redirect=/checkout" style={{ textDecoration: 'none' }}>
+              <Button type="button" variant="outline" size="sm">
+                REGISTER
+              </Button>
+            </Link>
+          </div>
         </div>
       ) : (
         <div style={{
@@ -483,15 +486,26 @@ const Checkout = () => {
             </div>
 
             {!isAuthenticated ? (
-              <Button 
-                type="button" 
-                variant="primary" 
-                fullWidth 
-                size="lg" 
-                onClick={() => setShowAuthModal(true)}
-              >
-                SIGN IN / REGISTER TO PLACE ORDER
-              </Button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <Button 
+                  type="button" 
+                  variant="primary" 
+                  fullWidth 
+                  size="lg" 
+                  onClick={() => navigate('/login?redirect=/checkout')}
+                >
+                  SIGN IN TO PLACE ORDER
+                </Button>
+                <div style={{ textAlign: 'center', fontSize: '0.9rem' }}>
+                  <span style={{ color: 'var(--secondary-text)' }}>New customer? </span>
+                  <Link 
+                    to="/register?redirect=/checkout" 
+                    style={{ color: 'var(--primary-green)', fontWeight: 'bold' }}
+                  >
+                    Register here to checkout
+                  </Link>
+                </div>
+              </div>
             ) : (
               <Button type="submit" variant="primary" fullWidth size="lg" disabled={isLoading}>
                 {isLoading ? 'PROCESSING...' : `PLACE ORDER (₹${grandTotal})`}
