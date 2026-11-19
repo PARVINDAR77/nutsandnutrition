@@ -56,16 +56,17 @@ fi
 
 # 2. Build and start Docker containers
 echo "🐳 Building and starting Docker containers..."
-docker compose down || true
 docker compose up -d --build
 
-# 3. Wait for database container to be healthy
-echo "⏳ Waiting for MariaDB container on 127.0.0.1:3307 to initialize..."
+# 3. Wait for database container to be fully ready
+echo "⏳ Waiting for MariaDB container on 127.0.0.1:3307 to be fully ready..."
+sleep 5
 for i in {1..30}; do
-    if docker exec nutsandnutrition-db mariadb-admin ping -u nuts_user -pNutsLive2026! --silent; then
-        echo "✅ MariaDB is ready!"
+    if docker exec nutsandnutrition-db mariadb -u nuts_user -pNutsLive2026! -e "SELECT 1;" nutsandnutrition >/dev/null 2>&1; then
+        echo "✅ MariaDB is fully ready and accepting queries!"
         break
     fi
+    echo "Waiting for MariaDB ($i/30)..."
     sleep 2
 done
 
