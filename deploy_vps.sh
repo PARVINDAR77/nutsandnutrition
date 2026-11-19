@@ -4,7 +4,7 @@ set -e
 # ==============================================================================
 # Nuts & Nutrition - VPS Safe Deployment Script
 # Isolated Docker Bridge: nuts_net
-# Upstream Port: 127.0.0.1:8096 (Mapped to container port 80)
+# Upstream Port: 127.0.0.1:8098 (Mapped to container port 80)
 # Isolated MariaDB: 127.0.0.1:3307 (Internal Docker: nutsandnutrition-db:3306)
 # Completely isolated from Knotelle, Convoza, AdMafia, and host PHP-FPM
 # ==============================================================================
