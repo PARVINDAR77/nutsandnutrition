@@ -3,8 +3,10 @@ services:
     image: mariadb:10.11
     container_name: nutsandnutrition-db
     restart: always
+    networks:
+      - nuts_net
     ports:
-      - "127.0.0.1:3307:3306"
+      - "127.0.0.1:${DB_PORT:-3307}:3306"
     environment:
       MYSQL_DATABASE: nutsandnutrition
       MYSQL_USER: nuts_user
@@ -19,7 +21,10 @@ services:
       dockerfile: docker/Dockerfile
     container_name: nutsandnutrition-app
     restart: always
-    network_mode: "host"
+    networks:
+      - nuts_net
+    ports:
+      - "127.0.0.1:${PORT:-8096}:80"
     depends_on:
       - nutsandnutrition-db
     volumes:
@@ -33,6 +38,10 @@ services:
       - ./laravel-react-app/.env:/var/www/html/.env
     environment:
       - APP_ENV=production
+
+networks:
+  nuts_net:
+    driver: bridge
 
 volumes:
   nutsandnutrition_mysql_data:
