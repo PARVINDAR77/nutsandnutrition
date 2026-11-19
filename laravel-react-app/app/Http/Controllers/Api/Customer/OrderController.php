@@ -191,7 +191,7 @@ class OrderController extends Controller
                 'shipping_method' => 'custom',
                 'currency' => 'INR',
                 'status' => 'pending',
-                'payment_status' => $request->payment_method === 'cod' ? 'pending' : 'paid',
+                'payment_status' => 'pending',
                 'subtotal' => $subtotal,
                 'tax_total' => $totalTaxAmount,
                 'shipping_total' => $shippingTotal,

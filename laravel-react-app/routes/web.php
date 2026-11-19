@@ -316,100 +316,15 @@ Route::prefix('admin')->group(function () {
 });
 
 
-Route::get('/run-migration', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true]);
-        return "Database migration and seeding completed successfully! You can now go back to your website.";
-    } catch (\Exception $e) {
-        return "Error: " . $e->getMessage();
-    }
-});
-
-Route::get('/setup-admin', function () {
-    try {
-        $admins = [
-            [
-                'email' => 'admin@example.com',
-                'name' => 'Super Admin',
-                'password' => 'Admin@123',
-            ],
-            [
-                'email' => 'nutsandnutrition@gmail.com',
-                'name' => 'Nuts & Nutrition Admin',
-                'password' => 'Admin@123',
-            ],
-        ];
-
-        $results = [];
-        foreach ($admins as $item) {
-            $admin = \App\Models\Admin::updateOrCreate(
-                ['email' => $item['email']],
-                [
-                    'name' => $item['name'],
-                    'password' => \Illuminate\Support\Facades\Hash::make($item['password']),
-                    'role' => 'admin',
-                    'status' => true,
-                    'password_changed_at' => now(),
-                ]
-            );
-            $results[] = [
-                'email' => $admin->email,
-                'name' => $admin->name,
-                'status' => $admin->status ? 'Active' : 'Inactive',
-                'password' => $item['password']
-            ];
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Admin accounts created and passwords set successfully!',
-            'accounts' => $results,
-            'login_url' => url('/admin/login')
-        ], 200, [], JSON_PRETTY_PRINT);
-    } catch (\Exception $e) {
-        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
-    }
-});
-
-Route::get('/check-admins', function () {
-    return response()->json(\App\Models\Admin::all(['id', 'name', 'email', 'role', 'status']), 200, [], JSON_PRETTY_PRINT);
-});
-
 /*
 |--------------------------------------------------------------------------
 | REACT SPA CATCH-ALL
 |--------------------------------------------------------------------------
 */
-Route::get('/debug-vite', function () {
-    return response()->json([
-        'public_path' => public_path(),
-        'build_dir_exists' => is_dir(public_path('build')),
-        'manifest_exists' => file_exists(public_path('build/manifest.json')),
-        'dot_vite_manifest_exists' => file_exists(public_path('build/.vite/manifest.json')),
-        'manifest_content' => file_exists(public_path('build/manifest.json')) ? json_decode(file_get_contents(public_path('build/manifest.json')), true) : null,
-    ]);
-});
-
 Route::get('/', function () {
-    try {
-        return view('app');
-    } catch (\Throwable $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-        ], 500);
-    }
+    return view('app');
 });
 
 Route::get('/{any}', function () {
-    try {
-        return view('app');
-    } catch (\Throwable $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-        ], 500);
-    }
+    return view('app');
 })->where('any', '.*');

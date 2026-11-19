@@ -116,12 +116,9 @@ if ! grep -q "APP_KEY=base64:" laravel-react-app/.env; then
     docker exec nutsandnutrition-app php artisan key:generate --force
 fi
 
-# 6. Database Migrations and Seeders
+# 6. Database Migrations
 echo "🗄️ Running database migrations..."
 docker exec nutsandnutrition-app php artisan migrate --force
-
-echo "👤 Ensuring Super Admin account is seeded..."
-docker exec nutsandnutrition-app php artisan db:seed --class=AdminSeeder --force
 
 # 7. Permissions & Storage Symlink & Caches
 echo "🔒 Ensuring full write permissions on storage and bootstrap/cache..."

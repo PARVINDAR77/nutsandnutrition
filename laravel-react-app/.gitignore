@@ -18,6 +18,9 @@
 /public/storage
 /storage/*.key
 /storage/pail
+laravel_react
+*.sqlite
+*.sqlite3
 /vendor
 Homestead.json
 Homestead.yaml
