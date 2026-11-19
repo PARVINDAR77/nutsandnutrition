@@ -24,7 +24,7 @@ services:
     networks:
       - nuts_net
     ports:
-      - "127.0.0.1:${PORT:-8096}:80"
+      - "127.0.0.1:${PORT:-8098}:80"
     depends_on:
       - nutsandnutrition-db
     volumes:

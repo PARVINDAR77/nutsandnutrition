@@ -12,7 +12,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="${PROJECT_DIR:-$SCRIPT_DIR}"
 DOMAIN="nutsandnutrition.shop"
-PORT="${PORT:-8096}"
+PORT="${PORT:-8098}"
 DB_PORT="${DB_PORT:-3307}"
 
 echo "=================================================="
@@ -86,6 +86,10 @@ else
 fi
 
 # 2. Build and start Docker containers (Isolated Bridge Network)
+echo "🛑 Tearing down any existing containers to release old host-mode bindings..."
+docker compose down --remove-orphans 2>/dev/null || true
+docker rm -f nutsandnutrition-app nutsandnutrition-db 2>/dev/null || true
+
 echo "🐳 Building and starting Docker containers..."
 PORT="$PORT" DB_PORT="$DB_PORT" docker compose up -d --build
 
@@ -177,6 +181,17 @@ echo "HTTP $CONTAINER_HTTP"
 echo -n "2. Testing Host Nginx proxy for ${DOMAIN}... "
 ROUTING_HTTP=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: ${DOMAIN}" "http://127.0.0.1/" || echo "FAIL")
 echo "HTTP $ROUTING_HTTP"
+
+echo -n "3. Verifying rendered HTML page title... "
+PAGE_TITLE=$(curl -s -L -H "Host: ${DOMAIN}" "http://127.0.0.1/" | grep -o '<title>[^<]*</title>' | head -n 1 || echo "No title found")
+echo "$PAGE_TITLE"
+
+if echo "$PAGE_TITLE" | grep -qi "Nuts"; then
+    echo "✅ CONFIRMED: nutsandnutrition.shop is properly serving Nuts & Nutrition!"
+else
+    echo "⚠️  WARNING: Response does not contain 'Nuts'. It returned: $PAGE_TITLE"
+    echo "   Checking if Knotelle or another site is acting as default_server in /etc/nginx/sites-enabled/..."
+fi
 
 echo ""
 echo "=================================================="
