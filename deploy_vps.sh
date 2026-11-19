@@ -123,7 +123,10 @@ docker exec nutsandnutrition-app php artisan migrate --force
 echo "👤 Ensuring Super Admin account is seeded..."
 docker exec nutsandnutrition-app php artisan db:seed --class=AdminSeeder --force
 
-# 7. Symlink storage & Optimize caches
+# 7. Permissions & Storage Symlink & Caches
+echo "🔒 Ensuring full write permissions on storage and bootstrap/cache..."
+chmod -R 777 laravel-react-app/storage laravel-react-app/bootstrap/cache 2>/dev/null || true
+docker exec -u 0 nutsandnutrition-app chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 echo "⚡ Clearing all Laravel caches..."
 docker exec nutsandnutrition-app php artisan storage:link || true
 docker exec nutsandnutrition-app php artisan optimize:clear
