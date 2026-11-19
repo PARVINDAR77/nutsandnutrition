@@ -380,10 +380,36 @@ Route::get('/check-admins', function () {
 | REACT SPA CATCH-ALL
 |--------------------------------------------------------------------------
 */
+Route::get('/debug-vite', function () {
+    return response()->json([
+        'public_path' => public_path(),
+        'build_dir_exists' => is_dir(public_path('build')),
+        'manifest_exists' => file_exists(public_path('build/manifest.json')),
+        'dot_vite_manifest_exists' => file_exists(public_path('build/.vite/manifest.json')),
+        'manifest_content' => file_exists(public_path('build/manifest.json')) ? json_decode(file_get_contents(public_path('build/manifest.json')), true) : null,
+    ]);
+});
+
 Route::get('/', function () {
-    return view('app');
+    try {
+        return view('app');
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
 });
 
 Route::get('/{any}', function () {
-    return view('app');
+    try {
+        return view('app');
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
 })->where('any', '.*');
