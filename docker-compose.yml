@@ -1,0 +1,38 @@
+services:
+  nutsandnutrition-db:
+    image: mariadb:10.11
+    container_name: nutsandnutrition-db
+    restart: always
+    ports:
+      - "127.0.0.1:3307:3306"
+    environment:
+      MYSQL_DATABASE: nutsandnutrition
+      MYSQL_USER: nuts_user
+      MYSQL_PASSWORD: NutsLive2026!
+      MYSQL_ROOT_PASSWORD: NutsLive2026!
+    volumes:
+      - nutsandnutrition_mysql_data:/var/lib/mysql
+
+  nutsandnutrition:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: nutsandnutrition-app
+    restart: always
+    network_mode: "host"
+    depends_on:
+      - nutsandnutrition-db
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/http.d/default.conf
+      - ./docker/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./docker/php-fpm-pool.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ./laravel-react-app/routes:/var/www/html/routes
+      - ./laravel-react-app/app:/var/www/html/app
+      - ./laravel-react-app/resources:/var/www/html/resources
+      - ./laravel-react-app/storage:/var/www/html/storage
+      - ./laravel-react-app/.env:/var/www/html/.env
+    environment:
+      - APP_ENV=production
+
+volumes:
+  nutsandnutrition_mysql_data:
