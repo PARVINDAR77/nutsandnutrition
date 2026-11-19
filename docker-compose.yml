@@ -33,6 +33,7 @@ services:
       - ./docker/php-fpm-pool.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ./laravel-react-app/routes:/var/www/html/routes
       - ./laravel-react-app/app:/var/www/html/app
+      - ./laravel-react-app/config:/var/www/html/config
       - ./laravel-react-app/resources:/var/www/html/resources
       - ./laravel-react-app/storage:/var/www/html/storage
       - ./laravel-react-app/.env:/var/www/html/.env
