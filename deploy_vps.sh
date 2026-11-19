@@ -124,11 +124,9 @@ echo "👤 Ensuring Super Admin account is seeded..."
 docker exec nutsandnutrition-app php artisan db:seed --class=AdminSeeder --force
 
 # 7. Symlink storage & Optimize caches
-echo "⚡ Optimizing Laravel caches..."
+echo "⚡ Clearing all Laravel caches..."
 docker exec nutsandnutrition-app php artisan storage:link || true
 docker exec nutsandnutrition-app php artisan optimize:clear
-docker exec nutsandnutrition-app php artisan optimize
-docker exec nutsandnutrition-app php artisan view:cache
 
 # 8. Setup Host Nginx Reverse Proxy (HTTP & HTTPS)
 echo "🌐 Configuring Host Nginx reverse proxy for ${DOMAIN}..."
