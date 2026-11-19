@@ -130,9 +130,47 @@ docker exec nutsandnutrition-app php artisan optimize:clear
 docker exec nutsandnutrition-app php artisan optimize
 docker exec nutsandnutrition-app php artisan view:cache
 
-# 8. Setup Host Nginx Reverse Proxy
+# 8. Setup Host Nginx Reverse Proxy (HTTP & HTTPS)
 echo "🌐 Configuring Host Nginx reverse proxy for ${DOMAIN}..."
-cat <<EOF > /etc/nginx/sites-available/${DOMAIN}.conf
+
+if [ -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
+    echo "🔒 Existing SSL certificate found! Generating full HTTPS + HTTP reverse proxy configuration..."
+    cat <<EOF > /etc/nginx/sites-available/${DOMAIN}.conf
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${DOMAIN} www.${DOMAIN};
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name ${DOMAIN} www.${DOMAIN};
+
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+
+    client_max_body_size 256M;
+
+    location / {
+        proxy_pass http://127.0.0.1:${PORT};
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Host \$host;
+        proxy_set_header X-Forwarded-Port 443;
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+    }
+}
+EOF
+else
+    echo "📄 Generating initial HTTP configuration for Certbot validation..."
+    cat <<EOF > /etc/nginx/sites-available/${DOMAIN}.conf
 server {
     listen 80;
     listen [::]:80;
@@ -140,7 +178,6 @@ server {
 
     client_max_body_size 256M;
 
-    # Forward to isolated Docker upstream
     location / {
         proxy_pass http://127.0.0.1:${PORT};
         proxy_http_version 1.1;
@@ -156,6 +193,7 @@ server {
     }
 }
 EOF
+fi
 
 ln -sf /etc/nginx/sites-available/${DOMAIN}.conf /etc/nginx/sites-enabled/${DOMAIN}.conf
 
@@ -167,6 +205,19 @@ if nginx -t; then
 else
     echo "❌ Error in Nginx configuration! Check above output."
     exit 1
+fi
+
+# 10. Automatically provision SSL certificate via Certbot if not yet issued
+if [ ! -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
+    if command -v certbot >/dev/null 2>&1; then
+        echo "🔒 Requesting SSL certificate from Let's Encrypt for ${DOMAIN}..."
+        certbot --nginx -d "${DOMAIN}" -d "www.${DOMAIN}" --non-interactive --agree-tos -m "admin@${DOMAIN}" --redirect || {
+            echo "⚠️  Certbot automated attempt finished. If needed, run:"
+            echo "   sudo certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}"
+        }
+    else
+        echo "💡 Tip: Install certbot (apt install -y certbot python3-certbot-nginx) to enable SSL."
+    fi
 fi
 
 # 10. Verification Tests
