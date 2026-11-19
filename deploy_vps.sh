@@ -121,9 +121,10 @@ echo "🗄️ Running database migrations..."
 docker exec nutsandnutrition-app php artisan migrate --force
 
 # 7. Permissions & Storage Symlink & Caches
-echo "🔒 Ensuring full write permissions on storage and bootstrap/cache..."
-chmod -R 777 laravel-react-app/storage laravel-react-app/bootstrap/cache 2>/dev/null || true
-docker exec -u 0 nutsandnutrition-app chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+echo "🔒 Ensuring secure permissions on storage and bootstrap/cache..."
+chmod -R 775 laravel-react-app/storage laravel-react-app/bootstrap/cache 2>/dev/null || true
+docker exec -u 0 nutsandnutrition-app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+docker exec -u 0 nutsandnutrition-app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 echo "⚡ Clearing all Laravel caches..."
 docker exec nutsandnutrition-app php artisan storage:link || true
 docker exec nutsandnutrition-app php artisan optimize:clear
@@ -138,6 +139,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name ${DOMAIN} www.${DOMAIN};
+    server_tokens off;
     return 301 https://\$host\$request_uri;
 }
 
@@ -145,9 +147,20 @@ server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
     server_name ${DOMAIN} www.${DOMAIN};
+    server_tokens off;
 
     ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    # Security Headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
 
     client_max_body_size 256M;
 
@@ -173,6 +186,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name ${DOMAIN} www.${DOMAIN};
+    server_tokens off;
 
     client_max_body_size 256M;
 

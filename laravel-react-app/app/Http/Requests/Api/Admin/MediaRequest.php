@@ -32,7 +32,7 @@ class MediaRequest extends FormRequest
             $rules['files.*'] = [
                 'required',
                 'file',
-                'mimes:jpg,jpeg,png,gif,webp,svg,ico',
+                'mimes:jpg,jpeg,png,gif,webp,ico',
                 'max:4096', // 4MB in KB (per file)
                 'dimensions:min_width=16,min_height=16,max_width=5000,max_height=5000',
             ];
