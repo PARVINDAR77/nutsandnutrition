@@ -271,6 +271,16 @@
         });
     }
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     function renderCustomers(customers) {
         const tbody = document.getElementById('customersTableBody');
         tbody.innerHTML = '';
@@ -302,6 +312,11 @@
                 day: 'numeric'
             });
 
+            const safeName = escapeHtml(customer.name);
+            const safeEmail = escapeHtml(customer.email);
+            const safeMobile = escapeHtml(customer.mobile || 'N/A');
+            const initialChar = safeName.length > 0 ? safeName.charAt(0).toUpperCase() : '?';
+
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
                     <input type="checkbox" class="customer-checkbox" value="${customer.id}"
@@ -314,12 +329,12 @@
                     <div class="flex items-center">
                         <div class="h-10 w-10 flex-shrink-0">
                             <div class="h-10 w-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white font-semibold shadow-sm">
-                                ${customer.name.charAt(0).toUpperCase()}
+                                ${initialChar}
                             </div>
                         </div>
                         <div class="ml-4">
                             <div class="text-sm font-medium text-gray-900">
-                                ${customer.name}
+                                ${safeName}
                             </div>
                             <div class="text-sm text-gray-500">
                                 Customer
@@ -328,12 +343,12 @@
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500">
-                    <a href="mailto:${customer.email}" class="text-red-600 hover:text-red-900 font-medium">
-                        ${customer.email}
+                    <a href="mailto:${safeEmail}" class="text-red-600 hover:text-red-900 font-medium">
+                        ${safeEmail}
                     </a>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${customer.mobile || 'N/A'}
+                    ${safeMobile}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500 text-center">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${customer.orders_count > 10 ? 'bg-red-100 text-red-800' : 'bg-red-100 text-red-800'}">

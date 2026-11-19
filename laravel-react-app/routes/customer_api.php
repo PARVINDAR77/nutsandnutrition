@@ -8,8 +8,8 @@ use App\Http\Controllers\Api\Customer\OfferController;
 Route::prefix('customer')->group(function () {
     // Public routes
     Route::get('home', [\App\Http\Controllers\Api\Customer\HomeController::class, 'index']);
-    Route::post('login', [CustomerApiAuthController::class, 'login']);
-    Route::post('register', [CustomerApiAuthController::class, 'register']);
+    Route::post('login', [CustomerApiAuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('register', [CustomerApiAuthController::class, 'register'])->middleware('throttle:5,1');
 
     // Public offers routes
     Route::get('offers/active', [OfferController::class, 'getActiveOffers']);
@@ -21,7 +21,7 @@ Route::prefix('customer')->group(function () {
     
     // Contact form route
     Route::get('contact/settings', [\App\Http\Controllers\Api\ContactController::class, 'settings']);
-    Route::post('contact', [\App\Http\Controllers\Api\ContactController::class, 'submit']);
+    Route::post('contact', [\App\Http\Controllers\Api\ContactController::class, 'submit'])->middleware('throttle:3,1');
     
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
@@ -41,7 +41,7 @@ Route::prefix('customer')->group(function () {
         Route::post('logout', [CustomerApiAuthController::class, 'logout']);
         
         // Orders (strictly authenticated - order linked to customer)
-        Route::post('orders', [\App\Http\Controllers\Api\Customer\OrderController::class, 'store']);
+        Route::post('orders', [\App\Http\Controllers\Api\Customer\OrderController::class, 'store'])->middleware('throttle:10,1');
         Route::get('orders', [\App\Http\Controllers\Api\Customer\OrderController::class, 'index']);
         
         // Customer addresses

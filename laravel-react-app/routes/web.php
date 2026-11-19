@@ -61,7 +61,7 @@ Route::prefix('admin')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/login', [AdminAuth::class, 'loginPage'])->name('admin.login');
-    Route::post('/login', [AdminAuth::class, 'login'])->name('admin.login.submit');
+    Route::post('/login', [AdminAuth::class, 'login'])->middleware('throttle:5,1')->name('admin.login.submit');
     Route::post('/logout', [AdminAuth::class, 'logout'])->name('admin.logout');
 
     /*

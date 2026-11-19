@@ -9,6 +9,7 @@ import QuantitySelector from '../components/QuantitySelector';
 import Button from '../components/Button';
 import AuthModal from '../components/AuthModal';
 import { useAutoRefresh } from '../context/AutoRefreshContext';
+import DOMPurify from 'dompurify';
 
 const ProductDetails = () => {
   const { slug } = useParams();
@@ -229,7 +230,7 @@ const ProductDetails = () => {
 
           <div 
             style={{ fontSize: '1.1rem', marginBottom: '2rem', color: 'var(--secondary-text)' }}
-            dangerouslySetInnerHTML={{ __html: product.description }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || '') }}
           />
 
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--brand-red)', marginBottom: '1.5rem' }}>

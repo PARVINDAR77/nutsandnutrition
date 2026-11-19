@@ -347,6 +347,16 @@
         });
     }
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     function renderOrders(orders) {
         const tbody = document.getElementById('ordersTableBody');
         tbody.innerHTML = '';
@@ -379,30 +389,36 @@
                 day: 'numeric'
             });
 
+            const safeOrderNumber = escapeHtml(order.order_number);
+            const safeCustomerName = escapeHtml(order.customer_name);
+            const safeCustomerMobile = escapeHtml(order.customer_mobile || 'N/A');
+            const safeCustomerEmail = escapeHtml(order.customer_email || 'N/A');
+            const initialChar = safeCustomerName.length > 0 ? safeCustomerName.charAt(0).toUpperCase() : '?';
+
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
                     <input type="checkbox" class="order-checkbox" value="${order.id}"
                            onchange="toggleOrderSelection(${order.id}, this.checked)">
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">
-                    ${order.order_number}
+                    ${safeOrderNumber}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <div class="h-10 w-10 flex-shrink-0">
                             <div class="h-10 w-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white font-semibold shadow-sm">
-                                ${order.customer_name.charAt(0).toUpperCase()}
+                                ${initialChar}
                             </div>
                         </div>
                         <div class="ml-4">
                             <div class="text-sm font-medium text-stone-900">
-                                ${order.customer_name}
+                                ${safeCustomerName}
                             </div>
                             <div class="text-sm text-stone-500 font-medium flex items-center mt-1">
-                                ${order.customer_mobile}
+                                ${safeCustomerMobile}
                             </div>
                             <div class="text-sm text-stone-500">
-                                ${order.customer_email}
+                                ${safeCustomerEmail}
                             </div>
                         </div>
                     </div>
