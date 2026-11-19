@@ -15,7 +15,7 @@ services:
     volumes:
       - nutsandnutrition_mysql_data:/var/lib/mysql
 
-  nutsandnutrition:
+  nutsandnutrition-app:
     build:
       context: .
       dockerfile: docker/Dockerfile
