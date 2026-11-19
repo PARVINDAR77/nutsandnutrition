@@ -60,6 +60,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess, initialMode = 'login', title = 
       return;
     }
 
+    if (regData.password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(regData.email)) {
       setError('Please enter a valid email address.');

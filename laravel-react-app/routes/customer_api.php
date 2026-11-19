@@ -32,14 +32,16 @@ Route::prefix('customer')->group(function () {
         Route::get('/{slug}', [ProductController::class, 'show']); // Move to bottom
     });
 
-    // Order checkout (public for guests, can be moved to protected if needed)
-    Route::post('orders', [\App\Http\Controllers\Api\Customer\OrderController::class, 'store']);
+    // Public cart validation
     Route::post('cart/validate', [\App\Http\Controllers\Api\Customer\OrderController::class, 'validateCart']);
 
-    // Protected routes (require authentication)
+    // Protected routes (require customer authentication)
     Route::middleware('auth:customer_api')->group(function () {
         Route::get('profile', [CustomerApiAuthController::class, 'profile']);
         Route::post('logout', [CustomerApiAuthController::class, 'logout']);
+        
+        // Orders (strictly authenticated - order linked to customer)
+        Route::post('orders', [\App\Http\Controllers\Api\Customer\OrderController::class, 'store']);
         Route::get('orders', [\App\Http\Controllers\Api\Customer\OrderController::class, 'index']);
         
         // Customer addresses

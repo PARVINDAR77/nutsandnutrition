@@ -12,7 +12,7 @@ import AuthModal from '../components/AuthModal';
 
 const Checkout = () => {
   const { cartItems, cartTotal, taxTotal, clearCart } = useCart();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
   
   const [isSuccess, setIsSuccess] = useState(false);
@@ -23,6 +23,13 @@ const Checkout = () => {
 
   // Auth Modal State
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Auto-prompt modal if not logged in
+  useEffect(() => {
+    if (!isAuthLoading && !isAuthenticated) {
+      setShowAuthModal(true);
+    }
+  }, [isAuthLoading, isAuthenticated]);
 
   // Payment Modal State
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -475,9 +482,21 @@ const Checkout = () => {
               </div>
             </div>
 
-            <Button type="submit" variant="primary" fullWidth size="lg" disabled={isLoading}>
-              {isLoading ? 'PROCESSING...' : `PLACE ORDER (₹${grandTotal})`}
-            </Button>
+            {!isAuthenticated ? (
+              <Button 
+                type="button" 
+                variant="primary" 
+                fullWidth 
+                size="lg" 
+                onClick={() => setShowAuthModal(true)}
+              >
+                SIGN IN / REGISTER TO PLACE ORDER
+              </Button>
+            ) : (
+              <Button type="submit" variant="primary" fullWidth size="lg" disabled={isLoading}>
+                {isLoading ? 'PROCESSING...' : `PLACE ORDER (₹${grandTotal})`}
+              </Button>
+            )}
             
             <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', color: 'var(--secondary-text)', fontSize: '0.85rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><FiShield color="var(--primary-green)"/> 100% Secure Payment</div>
