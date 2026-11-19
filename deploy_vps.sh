@@ -13,13 +13,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="${PROJECT_DIR:-$SCRIPT_DIR}"
 DOMAIN="nutsandnutrition.shop"
 PORT="${PORT:-8098}"
+PORT2="${PORT2:-8099}"
 DB_PORT="${DB_PORT:-3307}"
 
 echo "=================================================="
 echo "🚀 Starting Deployment for Nuts & Nutrition"
 echo "Project Directory: $PROJECT_DIR"
 echo "Target Domain:     $DOMAIN"
-echo "Upstream Web Port: 127.0.0.1:$PORT"
+echo "Upstream Cluster:  127.0.0.1:$PORT & 127.0.0.1:$PORT2"
 echo "Database Port:     127.0.0.1:$DB_PORT"
 echo "=================================================="
 
@@ -27,22 +28,18 @@ cd "$PROJECT_DIR" || exit 1
 
 # 0. Check for Port Conflicts with other VPS sites (e.g., Knotelle, Convoza)
 echo "🔍 Checking for port conflicts on VPS..."
-if ss -tulnp 2>/dev/null | grep -q ":${PORT} "; then
-    EXISTING_PROC=$(ss -tulnp 2>/dev/null | grep ":${PORT} " || true)
-    if ! docker ps --filter "name=nutsandnutrition-app" --format '{{.Ports}}' 2>/dev/null | grep -q "${PORT}"; then
-        echo "⚠️  WARNING: Port ${PORT} is currently in use by another service on this VPS:"
-        echo "   $EXISTING_PROC"
-        echo ""
-        echo "   To avoid overlapping with other sites, specify an alternate port. Example:"
-        echo "   PORT=8098 bash deploy_vps.sh"
-        echo "=================================================="
-        exit 1
-    else
-        echo "ℹ️  Port ${PORT} is occupied by previous nutsandnutrition-app container (will be safely recreated)."
+for p in "$PORT" "$PORT2"; do
+    if ss -tulnp 2>/dev/null | grep -q ":${p} "; then
+        EXISTING_PROC=$(ss -tulnp 2>/dev/null | grep ":${p} " || true)
+        if ! docker ps --filter "name=nutsandnutrition-app" --format '{{.Ports}}' 2>/dev/null | grep -q "${p}"; then
+            echo "⚠️  WARNING: Port ${p} is currently in use by another service on this VPS:"
+            echo "   $EXISTING_PROC"
+            echo "   Specify alternate ports if necessary (e.g., PORT=8098 PORT2=8099 bash deploy_vps.sh)"
+            exit 1
+        fi
     fi
-else
-    echo "✅ Port ${PORT} is free and ready."
-fi
+done
+echo "✅ Ports ${PORT} and ${PORT2} are free and ready."
 
 # 1. Setup / Update production .env
 if [ ! -f "laravel-react-app/.env" ]; then
@@ -85,13 +82,13 @@ else
     sed -i 's/^DB_PORT=.*/DB_PORT=3306/' laravel-react-app/.env
 fi
 
-# 2. Build and start Docker containers (Isolated Bridge Network)
-echo "🛑 Tearing down any existing containers to release old host-mode bindings..."
+# 2. Build and start Docker containers (Isolated Bridge Network with 2-App Cluster)
+echo "🛑 Tearing down any existing containers to release old bindings..."
 docker compose down --remove-orphans 2>/dev/null || true
-docker rm -f nutsandnutrition-app nutsandnutrition-db 2>/dev/null || true
+docker rm -f nutsandnutrition-app nutsandnutrition-app-1 nutsandnutrition-app-2 nutsandnutrition-db 2>/dev/null || true
 
-echo "🐳 Building and starting Docker containers..."
-PORT="$PORT" DB_PORT="$DB_PORT" docker compose up -d --build
+echo "🐳 Building and starting Docker cluster containers (2 replicas)..."
+PORT="$PORT" PORT2="$PORT2" DB_PORT="$DB_PORT" docker compose up -d --build
 
 # 3. Wait for database container to be fully ready
 echo "⏳ Waiting for MariaDB container (nutsandnutrition-db:3306) to be ready..."
@@ -108,33 +105,43 @@ done
 # 4. Copy compiled Vite assets to host folder (safety sync)
 echo "📦 Syncing compiled Vite build assets..."
 mkdir -p laravel-react-app/public/build
-docker cp nutsandnutrition-app:/var/www/html/public/build/. laravel-react-app/public/build/ || true
+docker cp nutsandnutrition-app-1:/var/www/html/public/build/. laravel-react-app/public/build/ || true
 
 # 5. Application key generation if needed
 if ! grep -q "APP_KEY=base64:" laravel-react-app/.env; then
     echo "🔑 Generating application key..."
-    docker exec nutsandnutrition-app php artisan key:generate --force
+    docker exec nutsandnutrition-app-1 php artisan key:generate --force
 fi
 
 # 6. Database Migrations
 echo "🗄️ Running database migrations..."
-docker exec nutsandnutrition-app php artisan migrate --force
+docker exec nutsandnutrition-app-1 php artisan migrate --force
 
-# 7. Permissions & Storage Symlink & Caches
+# 7. Permissions & Storage Symlink & Caches on both cluster instances
 echo "🔒 Ensuring secure permissions on storage and bootstrap/cache..."
 chmod -R 775 laravel-react-app/storage laravel-react-app/bootstrap/cache 2>/dev/null || true
-docker exec -u 0 nutsandnutrition-app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
-docker exec -u 0 nutsandnutrition-app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
-echo "⚡ Clearing all Laravel caches..."
-docker exec nutsandnutrition-app php artisan storage:link || true
-docker exec nutsandnutrition-app php artisan optimize:clear
+docker exec -u 0 nutsandnutrition-app-1 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+docker exec -u 0 nutsandnutrition-app-1 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+docker exec -u 0 nutsandnutrition-app-2 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+docker exec -u 0 nutsandnutrition-app-2 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 
-# 8. Setup Host Nginx Reverse Proxy (HTTP & HTTPS)
-echo "🌐 Configuring Host Nginx reverse proxy for ${DOMAIN}..."
+echo "⚡ Clearing all Laravel caches..."
+docker exec nutsandnutrition-app-1 php artisan storage:link || true
+docker exec nutsandnutrition-app-1 php artisan optimize:clear
+docker exec nutsandnutrition-app-2 php artisan optimize:clear 2>/dev/null || true
+
+# 8. Setup Host Nginx Reverse Proxy with Upstream Load Balancing
+echo "🌐 Configuring Host Nginx Load Balancer for ${DOMAIN}..."
 
 if [ -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
-    echo "🔒 Existing SSL certificate found! Generating full HTTPS + HTTP reverse proxy configuration..."
+    echo "🔒 Existing SSL certificate found! Generating load-balanced HTTPS + HTTP reverse proxy configuration..."
     cat <<EOF > /etc/nginx/sites-available/${DOMAIN}.conf
+upstream nuts_app_cluster {
+    least_conn;
+    server 127.0.0.1:${PORT} max_fails=3 fail_timeout=10s;
+    server 127.0.0.1:${PORT2} max_fails=3 fail_timeout=10s;
+}
+
 server {
     listen 80;
     listen [::]:80;
@@ -166,7 +173,7 @@ server {
     client_max_body_size 256M;
 
     location / {
-        proxy_pass http://127.0.0.1:${PORT};
+        proxy_pass http://nuts_app_cluster;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -177,12 +184,22 @@ server {
         proxy_read_timeout 300s;
         proxy_connect_timeout 60s;
         proxy_send_timeout 300s;
+
+        # Automatic Failover & Retry on errors/timeouts
+        proxy_next_upstream error timeout invalid_header http_502 http_503 http_504;
+        proxy_next_upstream_tries 3;
     }
 }
 EOF
 else
     echo "📄 Generating initial HTTP configuration for Certbot validation..."
     cat <<EOF > /etc/nginx/sites-available/${DOMAIN}.conf
+upstream nuts_app_cluster {
+    least_conn;
+    server 127.0.0.1:${PORT} max_fails=3 fail_timeout=10s;
+    server 127.0.0.1:${PORT2} max_fails=3 fail_timeout=10s;
+}
+
 server {
     listen 80;
     listen [::]:80;
@@ -192,7 +209,7 @@ server {
     client_max_body_size 256M;
 
     location / {
-        proxy_pass http://127.0.0.1:${PORT};
+        proxy_pass http://nuts_app_cluster;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -203,6 +220,10 @@ server {
         proxy_read_timeout 300s;
         proxy_connect_timeout 60s;
         proxy_send_timeout 300s;
+
+        # Automatic Failover & Retry on errors/timeouts
+        proxy_next_upstream error timeout invalid_header http_502 http_503 http_504;
+        proxy_next_upstream_tries 3;
     }
 }
 EOF

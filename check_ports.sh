@@ -19,9 +19,9 @@ else
 fi
 
 echo ""
-echo "2️⃣  CHECKING KEY PORTS (80, 443, 8096, 8098, 9000, 3306, 3307):"
+echo "2️⃣  CHECKING KEY PORTS (80, 443, 8096, 8098, 8099, 9000, 3306, 3307):"
 echo "--------------------------------------------------"
-for port in 80 443 8096 8098 9000 3306 3307; do
+for port in 80 443 8096 8098 8099 9000 3306 3307; do
     echo -n "Port $port: "
     if ss -tulnp 2>/dev/null | grep -q ":${port} "; then
         ss -tulnp 2>/dev/null | grep ":${port} " | head -n 1 | awk '{print $1, $5, $7}'
